@@ -1,0 +1,351 @@
+# Skill Taxonomy — Java 21 LTS Agent Skills
+# 12 domains, ~65 granular skills
+# Status: stub | draft | complete
+
+version: "1.0.0"
+last_updated: "2026-06-01"
+
+domains:
+  core-java:
+    description: "Java 21 language mastery — JEPs, syntax, semantics"
+    skills:
+      - id: virtual-threads
+        title: "Virtual Threads & Structured Concurrency"
+        level: advanced
+        status: stub
+      - id: records-and-sealed-classes
+        title: "Records, Sealed Classes & Pattern Matching"
+        level: intermediate
+        status: stub
+      - id: switch-pattern-matching
+        title: "Pattern Matching for switch & instanceof"
+        level: intermediate
+        status: stub
+      - id: sequenced-collections
+        title: "Sequenced Collections API"
+        level: beginner
+        status: stub
+      - id: collections-best-practices
+        title: "Collections & Immutable Data"
+        level: intermediate
+        status: stub
+      - id: immutability
+        title: "Immutability Patterns in Java 21"
+        level: intermediate
+        status: stub
+      - id: exception-strategy
+        title: "Exception Handling Strategy"
+        level: intermediate
+        status: stub
+      - id: streams-vs-loops
+        title: "Streams API vs Imperative Loops"
+        level: intermediate
+        status: stub
+      - id: concurrency-fundamentals
+        title: "Concurrency Fundamentals (java.util.concurrent)"
+        level: advanced
+        status: stub
+      - id: string-templates
+        title: "String Templates (Preview in Java 21)"
+        level: intermediate
+        status: stub
+
+  architecture:
+    description: "Desktop architecture patterns for JavaFX applications"
+    skills:
+      - id: layered-architecture
+        title: "Layered Architecture for Desktop Apps"
+        level: intermediate
+        status: stub
+      - id: feature-based-packaging
+        title: "Feature-Based Package Organization"
+        level: intermediate
+        status: stub
+      - id: mvvm-javafx
+        title: "MVVM Pattern with JavaFX"
+        level: advanced
+        status: stub
+      - id: service-repository-pattern
+        title: "Service-Repository Pattern"
+        level: intermediate
+        status: stub
+      - id: offline-first-design
+        title: "Offline-First Design"
+        level: advanced
+        status: stub
+      - id: domain-driven-structure-lite
+        title: "Domain-Driven Structure (Lite)"
+        level: advanced
+        status: stub
+      - id: event-driven-ui
+        title: "Event-Driven UI Architecture"
+        level: intermediate
+        status: stub
+
+  ui-javafx:
+    description: "JavaFX UI engineering — controls, layouts, threading"
+    skills:
+      - id: observable-properties
+        title: "Observable Properties & Bindings"
+        level: intermediate
+        status: stub
+      - id: bindings
+        title: "JavaFX Bindings Deep Dive"
+        level: intermediate
+        status: stub
+      - id: threading-and-platform-runlater
+        title: "Threading & Platform.runLater"
+        level: intermediate
+        status: stub
+      - id: layout-system
+        title: "JavaFX Layout System (Pane, VBox, HBox, GridPane)"
+        level: beginner
+        status: stub
+      - id: css-theming
+        title: "JavaFX CSS Theming"
+        level: intermediate
+        status: stub
+      - id: reusable-components
+        title: "Reusable UI Components"
+        level: intermediate
+        status: stub
+      - id: tableview-best-practices
+        title: "TableView Best Practices"
+        level: intermediate
+        status: stub
+      - id: form-validation
+        title: "Form Validation Patterns"
+        level: intermediate
+        status: stub
+      - id: async-ui-patterns
+        title: "Async UI Patterns (Task, Service, Progress)"
+        level: advanced
+        status: stub
+      - id: fxml-patterns
+        title: "FXML & Controller Patterns"
+        level: intermediate
+        status: stub
+
+  ui-kickstartfx:
+    description: "KickStartFX conventions and architecture"
+    skills:
+      - id: workspace-layout
+        title: "KickStartFX Workspace Layout"
+        level: intermediate
+        status: stub
+      - id: navigation-patterns
+        title: "Navigation Patterns"
+        level: intermediate
+        status: stub
+      - id: theme-customization
+        title: "Theme Customization"
+        level: intermediate
+        status: stub
+      - id: component-composition
+        title: "Component Composition"
+        level: intermediate
+        status: stub
+      - id: sidebar-shell-architecture
+        title: "Sidebar Shell Architecture"
+        level: advanced
+        status: stub
+      - id: responsive-desktop-layouts
+        title: "Responsive Desktop Layouts"
+        level: intermediate
+        status: stub
+      - id: dark-mode-strategy
+        title: "Dark Mode Strategy"
+        level: intermediate
+        status: stub
+
+  persistence:
+    description: "SQLite + Ebean ORM persistence layer"
+    skills:
+      - id: ebean-setup
+        title: "Ebean ORM Setup & Configuration"
+        level: intermediate
+        status: stub
+      - id: ebean-entities
+        title: "Entity Modeling with Ebean"
+        level: intermediate
+        status: stub
+      - id: ebean-queries
+        title: "Type-Safe Queries with Ebean"
+        level: intermediate
+        status: stub
+      - id: sqlite-best-practices
+        title: "SQLite Best Practices for Desktop Apps"
+        level: intermediate
+        status: stub
+      - id: database-migrations
+        title: "Database Migrations"
+        level: intermediate
+        status: stub
+
+  maven:
+    description: "Apache Maven build workflows"
+    skills:
+      - id: multi-module-projects
+        title: "Multi-Module Maven Projects"
+        level: intermediate
+        status: stub
+      - id: dependency-management
+        title: "Dependency Management & BOMs"
+        level: intermediate
+        status: stub
+      - id: shading-and-packaging
+        title: "Shading, Packaging & jpackage"
+        level: advanced
+        status: stub
+      - id: javafx-maven-plugin
+        title: "JavaFX Maven Plugin (Gluon)"
+        level: intermediate
+        status: stub
+      - id: profiles-environments
+        title: "Maven Profiles for Environments"
+        level: intermediate
+        status: stub
+      - id: reproducible-builds
+        title: "Reproducible Builds"
+        level: beginner
+        status: stub
+
+  testing:
+    description: "Unit, integration, and UI testing"
+    skills:
+      - id: junit5-fundamentals
+        title: "JUnit 5 Fundamentals"
+        level: beginner
+        status: stub
+      - id: testfx-ui-testing
+        title: "TestFX for JavaFX UI Testing"
+        level: advanced
+        status: stub
+      - id: integration-testing
+        title: "Integration Testing with SQLite"
+        level: intermediate
+        status: stub
+
+  packaging:
+    description: "jpackage and native installers"
+    skills:
+      - id: jpackage-basics
+        title: "jpackage Basics"
+        level: intermediate
+        status: stub
+      - id: native-installers
+        title: "Native Installers (deb, msi, dmg)"
+        level: advanced
+        status: stub
+
+  patterns:
+    description: "OOP principles, SOLID, design patterns"
+    skills:
+      - id: solid-principles
+        title: "SOLID Principles in Java"
+        level: intermediate
+        status: stub
+      - id: factory-pattern
+        title: "Factory & Abstract Factory"
+        level: intermediate
+        status: stub
+      - id: observer-pattern
+        title: "Observer Pattern (JavaFX Properties)"
+        level: intermediate
+        status: stub
+      - id: strategy-pattern
+        title: "Strategy Pattern"
+        level: intermediate
+        status: stub
+      - id: decorator-pattern
+        title: "Decorator Pattern"
+        level: intermediate
+        status: stub
+      - id: dependency-injection-pattern
+        title: "Dependency Injection Pattern"
+        level: intermediate
+        status: stub
+
+  performance:
+    description: "Desktop performance optimization"
+    skills:
+      - id: jvm-tuning
+        title: "JVM Tuning for Desktop Apps"
+        level: advanced
+        status: stub
+      - id: memory-profiling
+        title: "Memory Profiling & Leak Detection"
+        level: advanced
+        status: stub
+      - id: startup-optimization
+        title: "Application Startup Optimization"
+        level: intermediate
+        status: stub
+
+  security:
+    description: "Secrets, config, and auth for desktop apps"
+    skills:
+      - id: secrets-management
+        title: "Secrets Management"
+        level: intermediate
+        status: stub
+      - id: config-encryption
+        title: "Configuration Encryption"
+        level: intermediate
+        status: stub
+      - id: auth-patterns
+        title: "Authentication Patterns (Local)"
+        level: intermediate
+        status: stub
+
+  pos-domain:
+    description: "POS-specific domain workflows"
+    skills:
+      - id: inventory-transaction-modeling
+        title: "Inventory Transaction Modeling"
+        level: advanced
+        status: stub
+      - id: receipt-generation
+        title: "Receipt Generation"
+        level: intermediate
+        status: stub
+      - id: barcode-scanning-flow
+        title: "Barcode Scanning Flow"
+        level: intermediate
+        status: stub
+      - id: stock-movement-architecture
+        title: "Stock Movement Architecture"
+        level: advanced
+        status: stub
+      - id: cash-session-management
+        title: "Cash Session Management"
+        level: intermediate
+        status: stub
+      - id: audit-trail-patterns
+        title: "Audit Trail Patterns"
+        level: intermediate
+        status: stub
+      - id: offline-sync-readiness
+        title: "Offline Sync Readiness"
+        level: advanced
+        status: stub
+
+  reporting:
+    description: "JasperReports and barcode generation"
+    skills:
+      - id: jasperreports-basics
+        title: "JasperReports Basics"
+        level: intermediate
+        status: stub
+      - id: barcode-generation
+        title: "Barcode Generation with ZXing"
+        level: intermediate
+        status: stub
+
+stats:
+  total_domains: 13
+  total_skills: 68
+  by_level:
+    beginner: 5
+    intermediate: 42
+    advanced: 21
