@@ -1,10 +1,46 @@
-# Sqlite Desktop Anti-Patterns
+# SQLite Desktop Anti-Patterns
 
-See SKILL.md for core rules.
+## No WAL mode — concurrent reads blocked by writes
 
-## Common Mistakes
+```java
+// WRONG — default journal mode, readers blocked by single writer
+dataSource.setUrl("jdbc:sqlite:pos.db");
+```
 
-- **Direct instantiation** in UI layer — use constructor injection
-- **Swallowed exceptions** — always log or propagate
-- **Null returns** — use Optional instead of null
-- **String concat in logs** — use SLF4J parameterized messages
+**Enable WAL: `database.sqlUpdate("PRAGMA journal_mode=WAL").execute()`. Readers don't block writers.**
+
+## Storing DB in project directory — lost on redeploy
+
+```java
+// WRONG — database inside project, wiped on git clean or redeploy
+String url = "jdbc:sqlite:./pos.db";
+```
+
+**Store in user home: `Paths.get(System.getProperty("user.home"), ".simplepos", "pos.db")`.**
+
+## No backup — single file corruption loses everything
+
+```java
+// WRONG — no backup strategy
+```
+
+**Daily backup: `Files.copy(dbPath, backupPath, StandardCopyOption.REPLACE_EXISTING)`. Keep last 7 days.**
+
+## Multiple threads writing — SQLite corruption
+
+```java
+// WRONG — concurrent writes cause "database is locked"
+executor.submit(() -> writeA());
+executor.submit(() => writeB()); // may lock
+```
+
+**Queue writes via single-thread executor or use `PRAGMA busy_timeout = 30000`.**
+
+## No migration strategy — schema changes break users
+
+```java
+// WRONG — drop and recreate tables on every version
+database.sqlUpdate("DROP TABLE IF EXISTS product").execute();
+```
+
+**Use Ebean migrations: `1.sql`, `2.sql` numbered files. Track current version in schema_version table.**
