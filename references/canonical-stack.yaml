@@ -1,0 +1,140 @@
+# Canonical Stack Baseline — Java 21 LTS Agent Skills
+# Single source of truth for all skills in this library.
+# Every skill references this file for version compatibility.
+
+stack:
+  id: simple-pos-java21
+  name: "Simple POS System — Java 21 LTS Stack"
+  version: "1.0.0"
+  last_updated: "2026-06-01"
+
+layers:
+  language:
+    name: "Java SE 21 LTS"
+    version: "21"
+    distribution: "Eclipse Temurin (Adoptium)"
+    key_features:
+      - "Virtual Threads (JEP 444)"
+      - "Record Classes (JEP 395)"
+      - "Sealed Classes (JEP 409)"
+      - "Pattern Matching for switch (JEP 441)"
+      - "Sequenced Collections (JEP 431)"
+      - "Structured Concurrency (JEP 453, preview→final)"
+      - "String Templates (JEP 430, preview)"
+      - "Unnamed Patterns & Variables (JEP 443)"
+    docs: "https://docs.oracle.com/en/java/javase/21/"
+    migration_from: "Java 17"
+
+  ui_runtime:
+    name: "JavaFX"
+    version: "21"
+    provider: "OpenJFX"
+    distribution: "org.openjfx"
+    key_modules:
+      - "javafx-base"
+      - "javafx-controls"
+      - "javafx-fxml"
+      - "javafx-graphics"
+      - "javafx-web"
+    docs: "https://openjfx.io/"
+    javadoc: "https://openjfx.io/javadoc/21/"
+
+  ui_framework:
+    name: "KickStartFX"
+    version: "2024.x"
+    provider: "BestSolution.at"
+    purpose: "DI, navigation, modular architecture for JavaFX"
+    docs: "https://kickstart.bestsolution.at/"
+
+  build_tool:
+    name: "Apache Maven"
+    version: "3.9+"
+    wrapper: "mvnw (required)"
+    key_plugins:
+      - "maven-compiler-plugin (release=21)"
+      - "maven-surefire-plugin (JUnit 5)"
+      - "javafx-maven-plugin (Gluon)"
+      - "maven-shade-plugin (uber-jar fallback)"
+      - "maven-jpackage-plugin (native installers)"
+    docs: "https://maven.apache.org/"
+
+  orm:
+    name: "Ebean ORM"
+    version: "15.x"
+    purpose: "Type-safe ORM with code generation"
+    features:
+      - "Code-generated entity enhancement"
+      - "Type-safe query DSL"
+      - "Auto-tenant/multi-tenant support"
+      - "Database migrations via ebean-dbmigration"
+    docs: "https://ebean.io/"
+
+  database:
+    name: "SQLite"
+    version: "3.45+"
+    jdbc_driver: "org.xerial:sqlite-jdbc"
+    doc: "Embeddded, serverless, file-based"
+    docs: "https://www.sqlite.org/docs.html"
+
+  reporting:
+    name: "JasperReports"
+    version: "7.x"
+    library: "net.sf.jasperreports"
+    features:
+      - "JRXML template-based reports"
+      - "PDF, CSV, XLSX export"
+      - "Sub-reports and charts"
+      - "Pass-through parameters from Java"
+    docs: "https://community.jaspersoft.com/project/jasperreports-library"
+
+  dependency_injection:
+    approach: "Lightweight / manual constructor injection"
+    rationale: "Desktop apps don't need a full DI container; explicit wiring is clearer"
+    future: "Dagger or Micronaut if complexity demands it"
+
+  packaging:
+    name: "jpackage"
+    version: "Bundled with JDK 21"
+    output_formats:
+      - "deb (Linux)"
+      - "msi (Windows)"
+      - "dmg (macOS)"
+    requires: "WiX 3.0+ (Windows), apt/dpkg (Linux)"
+
+  logging:
+    facade: "SLF4J"
+    implementation: "Logback"
+    version: "1.5.x"
+    config: "logback.xml in src/main/resources"
+
+  config:
+    approach: ".env files for local dev, properties for production"
+    library: "dotenv-java (io.github.cdimascio:dotenv-java)"
+
+  testing:
+    framework: "JUnit 5 (Jupiter)"
+    version: "5.11+"
+    ui_testing: "TestFX (4.0.18+)"
+    assertions: "AssertJ"
+    mocking: "Mockito (only when DI makes it necessary)"
+    docs: "https://junit.org/junit5/docs/current/user-guide/"
+
+  barcode:
+    library: "ZXing (Zebra Crossing)"
+    version: "3.5+"
+    features: "Generate and scan barcodes (QR, Code128, EAN, UPC)"
+    maven: "com.google.zxing:core and com.google.zxing:javase"
+
+compatibility:
+  matrix:
+    - java: ">= 21"
+      maven: ">= 3.9"
+      javafx: ">= 21"
+      ebean: ">= 15"
+      sqlite: ">= 3.45"
+      junit: ">= 5.11"
+      kickstartfx: ">= 2024.x"
+  tested_on:
+    - "Ubuntu 22.04 LTS (x64)"
+    - "Ubuntu 22.04 LTS (ARM64)"
+    - "Windows 11 (x64)"
