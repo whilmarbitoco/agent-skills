@@ -1,89 +1,50 @@
 ---
 name: jvm-tuning
-description: "Use when optimizing JVM flags for desktop JavaFX apps."
-category: java
-tags:
-  - java-21
-  - performance
+description: >
+  Extends agent's knowledge of tuning JVM garbage collection and memory
+  for Java POS applications. Use when profiling GC pauses, sizing heaps,
+  or configuring low-latency G1GC flags.
+compatibility: Java 21+
+metadata:
+  domain: performance
+  level: advanced
+  stack: [java-21, slf4j-2]
+  version: "1.0.0"
 ---
 
-# JVM Tuning for Desktop Apps
+# JVM Tuning
 
-**Skill ID:** `jvm-tuning`  
-**Domain:** `performance`  
-**Level:** advanced  
-**Version:** 1.0.0  
-**Last Updated:** 2026-06-01
+POS applications need predictable low-latency response because every
+millisecond of GC pause delays a sale. Java 21 defaults to G1GC, but
+explicit tuning is still required for terminal hardware with 4–8 GB RAM.
 
-**Stack:** `java-21, maven`  
-**POS Guidance:** Flags: Xms256m Xmx512m G1GC Xshare:on.
+## Concepts
 
----
+- **G1GC** — region-based collector with configurable max pause target
+  (`-XX:MaxGCPauseMillis`).
+- **Heap sizing** — `-Xms` == `-Xmx` to avoid runtime heap resizing
+  (eliminates full GC from heap expansion).
+- **CDS (Class Data Sharing)** — pre-parsed class metadata archive shared
+  across JVM instances; reduces startup time.
+- **Virtual threads** — `ExecutorService.newVirtualThreadPerTaskExecutor()`
+  for I/O-bound work without thread pool tuning.
 
-## Purpose
+## Rules
 
-Use when optimizing JVM flags for desktop JavaFX apps.
+1. Always set `-Xms` equal to `-Xmx` in production.
+2. Set `-XX:MaxGCPauseMillis=50` for POS workloads (sub-100ms target).
+3. Generate a CDS archive with `-Xshare:dump` at build time; activate
+   with `-Xshare:on` at runtime.
+4. Use `-XX:+UseStringDeduplication` if logs and receipts create many
+   duplicate strings.
+5. Log GC with `-Xlog:gc*:file=gc.log:time,uptime,level,tags` for
+   post-mortem analysis.
 
----
+## Anti-patterns
 
-## Concepts Covered
+See [anti-patterns.md](./anti-patterns.md).
 
-- **G1GC**
-- **heap sizing**
-- **JIT compilation**
+## Related
 
----
-
-## Rules / Best Practices
-
-1. Use G1GC
-2. Set Xms to 50% of Xmx
-3. Use Xshare:on for CDS
-
----
-
-## Checklists
-
-### Implementation
-- [ ] Follow all rules above
-- [ ] Java 21 features used where applicable
-- [ ] POS domain guidance followed
-
-### Code Review
-- [ ] No layer boundary violations
-- [ ] Constructor injection used
-
----
-
-## Project-Specific Guidance (Simple POS)
-
-Flags: Xms256m Xmx512m G1GC Xshare:on.
-
----
-
-## Recommended Reading
-- [Java 21 Docs](https://docs.oracle.com/en/java/javase/21/)  
-- [OpenJDK JEPs](https://openjdk.org/projects/jdk/21/)
-
----
-
-## AI/Agent Guide
-
-### Strict Conventions
-- Follow all rules above
-- Java 21 features (records, sealed, virtual threads, pattern matching)
-- Constructor injection only; no static mutable state
-
-### Preferred Libraries
-- See references/canonical-stack.yaml
-
-### Example Prompts
-
-```
-Implement jvm-tuning in the Simple POS following the rules above.
-Use Java 21 features where applicable.
-```
-
-### Code Templates
-
-See canonical-stack.yaml for dependencies.
+- memory-profiling — heap dump and VisualVM profiling
+- startup-optimization — CDS and class loading improvements

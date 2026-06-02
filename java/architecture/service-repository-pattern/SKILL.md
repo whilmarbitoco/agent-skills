@@ -1,88 +1,43 @@
 ---
 name: service-repository-pattern
-description: "Use when implementing service-repository pattern for data access."
-category: java
-tags:
-  - java-21
-  - architecture
+description: >
+  Extends agent's knowledge of Service + Repository pattern in Java 21.
+  Use when implementing business logic and data access with clean boundaries,
+  testable units, and Ebean ORM or JDBC backends.
+compatibility: Java 21+
+metadata:
+  domain: architecture
+  level: beginner
+  stack: [java-21, ebean-15, sqlite, slf4j]
+  version: "1.0.0"
 ---
 
-# Service-Repository Pattern
+# Service + Repository Pattern
 
-**Skill ID:** `service-repository-pattern`  
-**Domain:** `architecture`  
-**Level:** intermediate  
-**Version:** 1.0.0  
-**Last Updated:** 2026-06-01
+Two-layer business/data split. Service owns transactions and rules; Repository owns queries.
 
-**Stack:** `java-21, maven`  
-**POS Guidance:** InventoryRepository, SaleRepository with Ebean implementations.
+## Repository
 
----
+- Wraps Ebean / JDBC calls. Returns domain objects or `Optional`.
+- No business logic — only CRUD, finders, and simple aggregations.
+- Interface + implementation split for testability.
 
-## Purpose
+## Service
 
-Use when implementing service-repository pattern for data access.
+- One public method per use case.
+- Calls one or more repositories inside a single transaction.
+- Validates input, enforces invariants, publishes domain events.
+- Constructor-injected with repositories and event publishers.
 
----
+## Rules
 
-## Concepts Covered
+- Service methods are the transaction boundary (`@Transactional` or Ebean `beginTransaction`).
+- Repos never call other repos — fan-out happens in the Service.
+- Return domain objects from repos; return DTOs or records from services to callers.
+- Use `Optional` for single-result finders; never return `null`.
+- Parameterized logging only — no string concatenation.
 
-- **Repository interface**
-- **Ebean implementation**
-- **Transaction boundary**
+## See also
 
----
-
-## Rules / Best Practices
-
-1. Repository interfaces in persistence package
-2. Services orchestrate repositories
-
----
-
-## Checklists
-
-### Implementation
-- [ ] Follow all rules above
-- [ ] Java 21 features used where applicable
-- [ ] POS domain guidance followed
-
-### Code Review
-- [ ] No layer boundary violations
-- [ ] Constructor injection used
-
----
-
-## Project-Specific Guidance (Simple POS)
-
-InventoryRepository, SaleRepository with Ebean implementations.
-
----
-
-## Recommended Reading
-- [Java 21 Docs](https://docs.oracle.com/en/java/javase/21/)  
-- [OpenJDK JEPs](https://openjdk.org/projects/jdk/21/)
-
----
-
-## AI/Agent Guide
-
-### Strict Conventions
-- Follow all rules above
-- Java 21 features (records, sealed, virtual threads, pattern matching)
-- Constructor injection only; no static mutable state
-
-### Preferred Libraries
-- See references/canonical-stack.yaml
-
-### Example Prompts
-
-```
-Implement service-repository-pattern in the Simple POS following the rules above.
-Use Java 21 features where applicable.
-```
-
-### Code Templates
-
-See canonical-stack.yaml for dependencies.
+- layered-architecture — where these layers sit
+- domain-driven-structure-lite — richer domain model variant

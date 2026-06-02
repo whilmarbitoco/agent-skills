@@ -1,88 +1,43 @@
 ---
 name: mvvm-javafx
-description: "Use when implementing Model-View-ViewModel in JavaFX."
-category: java
-tags:
-  - java-21
-  - architecture
+description: >
+  Extends agent's knowledge of MVVM pattern with JavaFX 21.
+  Use when building reactive desktop UIs with clean separation between
+  view definition (FXML), binding logic (ViewModel), and domain state (Model).
+compatibility: Java 21+
+metadata:
+  domain: architecture
+  level: intermediate
+  stack: [java-21, javafx-21, slf4j]
+  version: "1.0.0"
 ---
 
-# MVVM Pattern with JavaFX
+# MVVM with JavaFX
 
-**Skill ID:** `mvvm-javafx`  
-**Domain:** `architecture`  
-**Level:** advanced  
-**Version:** 1.0.0  
-**Last Updated:** 2026-06-01
+MVVM keeps the View passive and the ViewModel stateless in behavior. Bindings carry updates; they are not event spaghetti.
 
-**Stack:** `java-21, maven`  
-**POS Guidance:** Each POS screen has a ViewModel.
+## Roles
 
----
+- **Model** — Domain entities, records, value objects. No UI knowledge.
+- **ViewModel** — Observable state (`ObjectProperty`, `StringProperty`),
+  commands, and formatters. Holds no `Node` references.
+- **View** — FXML file + controller. Binds to ViewModel via `Bindings API`.
+  Minimal code-behind; no business logic.
 
-## Purpose
+## Rules
 
-Use when implementing Model-View-ViewModel in JavaFX.
+- Controller injects ViewModel via constructor; ViewModel never imports `javafx.scene.*`.
+- Use `SimpleObjectProperty`, `SimpleListProperty` — not raw fields with getters/setters.
+- Formatting (dates, currency) belongs in ViewModel, not in FXML.
+- ViewModels are testable with plain JUnit — no FX toolkit needed.
+- Prefer FXML for layout; use `fx:controller` with factory that injects the ViewModel.
 
----
+## Thread safety
 
-## Concepts Covered
+- All bound properties must be mutated on FX Application Thread.
+- Background work via `Task<Service>` pattern; ViewModel exposes `ObjectProperty<Task>`.
 
-- **ViewModel**
-- **Observable state**
-- **Data binding**
+## See also
 
----
-
-## Rules / Best Practices
-
-1. ViewModel exposes ObservableList/Property for binding
-2. ViewModel has no reference to View
-
----
-
-## Checklists
-
-### Implementation
-- [ ] Follow all rules above
-- [ ] Java 21 features used where applicable
-- [ ] POS domain guidance followed
-
-### Code Review
-- [ ] No layer boundary violations
-- [ ] Constructor injection used
-
----
-
-## Project-Specific Guidance (Simple POS)
-
-Each POS screen has a ViewModel.
-
----
-
-## Recommended Reading
-- [Java 21 Docs](https://docs.oracle.com/en/java/javase/21/)  
-- [OpenJDK JEPs](https://openjdk.org/projects/jdk/21/)
-
----
-
-## AI/Agent Guide
-
-### Strict Conventions
-- Follow all rules above
-- Java 21 features (records, sealed, virtual threads, pattern matching)
-- Constructor injection only; no static mutable state
-
-### Preferred Libraries
-- See references/canonical-stack.yaml
-
-### Example Prompts
-
-```
-Implement mvvm-javafx in the Simple POS following the rules above.
-Use Java 21 features where applicable.
-```
-
-### Code Templates
-
-See canonical-stack.yaml for dependencies.
+- event-driven-ui — event bus complements MVVM binding
+- layered-architecture — Model layer guidance

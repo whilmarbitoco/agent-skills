@@ -1,90 +1,45 @@
 ---
 name: immutability
-description: "Use when designing immutable value objects with records and defensive copying."
-category: java
-tags:
-  - java-21
-  - core-java
+description: >
+  Extends agent's knowledge of immutability patterns in Java: defensive copying,
+  with-er methods, and choosing between records and classes. Use when designing
+  value objects, preventing mutation of internal state, or refactoring mutable classes.
+compatibility: Java 21+
+metadata:
+  domain: core-java
+  level: beginner
+  stack: [java-21]
+  version: "1.0.0"
 ---
 
 # Immutability Patterns
 
-**Skill ID:** `immutability`  
-**Domain:** `core-java`  
-**Level:** intermediate  
-**Version:** 1.0.0  
-**Last Updated:** 2026-06-01
+Immutable objects are safer, easier to reason about, and inherently thread-safe.
+Java 21 provides records and `List.of()` / `Map.of()` / `Set.of()` for
+lightweight immutable values.
 
-**Stack:** `java-21, maven`  
-**POS Guidance:** All POS value objects as records. ProductView/SaleView for UI.
+## Concepts
 
----
+- **Records** — shallowly immutable data carriers (all fields are final)
+- **Defensive copy** — copy mutable inputs in constructors; copy mutable outputs in getters
+- **With-er methods** — `withX(newValue)` returns a new instance with one field changed
+- **`List.copyOf()`, `Map.copyOf()`** — unmodifiable copies at runtime
+- **When to use records vs classes** — records for values, classes for entities with behavior/identity
 
-## Purpose
+## Rules
 
-Use when designing immutable value objects with records and defensive copying.
+1. Make objects immutable by default. Add mutability only when required.
+2. Defensively copy all mutable constructor parameters (collections, arrays, dates).
+3. Return unmodifiable views or copies from getters — never the internal reference.
+4. Use with-er methods for "mutation" of immutable objects.
+5. Use records for pure data; use classes when you need encapsulation beyond the data.
+6. Mark fields `final`; never provide setters on immutable objects.
 
----
+## Anti-patterns
 
-## Concepts Covered
+See [anti-patterns.md](./anti-patterns.md).
 
-- **final fields**
-- **records**
-- **with-er methods**
-- **defensive copying**
+## Related
 
----
-
-## Rules / Best Practices
-
-1. Use records for all value objects
-2. Never expose mutable internal state
-3. Use with-er methods for copy-on-modify
-
----
-
-## Checklists
-
-### Implementation
-- [ ] Follow all rules above
-- [ ] Java 21 features used where applicable
-- [ ] POS domain guidance followed
-
-### Code Review
-- [ ] No layer boundary violations
-- [ ] Constructor injection used
-
----
-
-## Project-Specific Guidance (Simple POS)
-
-All POS value objects as records. ProductView/SaleView for UI.
-
----
-
-## Recommended Reading
-- [Java 21 Docs](https://docs.oracle.com/en/java/javase/21/)  
-- [OpenJDK JEPs](https://openjdk.org/projects/jdk/21/)
-
----
-
-## AI/Agent Guide
-
-### Strict Conventions
-- Follow all rules above
-- Java 21 features (records, sealed, virtual threads, pattern matching)
-- Constructor injection only; no static mutable state
-
-### Preferred Libraries
-- See references/canonical-stack.yaml
-
-### Example Prompts
-
-```
-Implement immutability in the Simple POS following the rules above.
-Use Java 21 features where applicable.
-```
-
-### Code Templates
-
-See canonical-stack.yaml for dependencies.
+- records-sealed — records, sealed interfaces
+- collections-best-practices — List.of(), copyOf()

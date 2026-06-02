@@ -1,0 +1,12 @@
+# Checklist
+
+## Implementation
+- [ ] .env in .gitignore
+- [ ] .env.example with dummy values committed
+- [ ] OS keyring for production secrets
+- [ ] Encrypted config for sensitive values
+
+## Code Review
+- [ ] No secrets in git history
+- [ ] No secrets in log output
+- [ ] No hardcoded credentials

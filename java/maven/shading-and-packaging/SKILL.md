@@ -1,88 +1,51 @@
 ---
 name: shading-and-packaging
-description: "Use when building a distributable JAR or native installer."
-category: java
-tags:
-  - java-21
-  - maven
+description: >
+  Extends agent's knowledge of creating Maven uber-jars with
+  maven-shade-plugin, including resource transformers and class
+  relocation. Use when producing a single executable jar for
+  distribution.
+compatibility: Java 21+
+metadata:
+  domain: maven
+  level: intermediate
+  stack: [java-21, maven-3.9]
+  version: "1.0.0"
 ---
 
-# Shading, Packaging & jpackage
+# Shading and Packaging
 
-**Skill ID:** `shading-and-packaging`  
-**Domain:** `maven`  
-**Level:** advanced  
-**Version:** 1.0.0  
-**Last Updated:** 2026-06-01
+`maven-shade-plugin` packages all dependencies into a single uber-jar.
+It can also **relocate** classes to avoid conflicts when the same library
+appears in the app and its consumers.
 
-**Stack:** `java-21, maven`  
-**POS Guidance:** jpackage for deb, msi, dmg.
+## Concepts
 
----
+- **Uber-jar** — one file with all classes + resources from deps.
+- **Relocation** — moves a package to a new name at build time (e.g.,
+  `com.google.common` → `shaded.com.google.common`).
+- **Resource transformers** — merge `META-INF/services`, `spring.handlers`,
+  etc. that would otherwise be overwritten.
+- **Minimize jar** — removes unused classes to reduce size.
 
-## Purpose
+## Rules
 
-Use when building a distributable JAR or native installer.
+1. Use `maven-shade-plugin` over `maven-assembly-plugin` for uber-jars.
+2. Configure `ServicesResourceTransformer` for `META-INF/services` files.
+3. Relocate conflicting deps (e.g., gRPC, Guava, Netty) to `shaded.*`.
+4. Use `<minimizeJar>true</minimizeJar>` to strip unused classes.
+5. Set `<createDependencyReducedPom>false</createDependencyReducedPom>`
+   to preserve original dependency info for consumers.
+6. Add a `Main-Class` manifest entry in the shade config.
+7. Test the shaded jar explicitly: `java -jar target/app-shaded.jar`.
+8. Never shade provided-scope dependencies.
 
----
+## Anti-patterns
 
-## Concepts Covered
+See [anti-patterns.md](./anti-patterns.md).
 
-- **maven-shade-plugin**
-- **maven-jpackage-plugin**
-- **uber-jar**
+## Related
 
----
-
-## Rules / Best Practices
-
-1. Use jpackage for native installers
-2. Use shade plugin only for library JARs
-
----
-
-## Checklists
-
-### Implementation
-- [ ] Follow all rules above
-- [ ] Java 21 features used where applicable
-- [ ] POS domain guidance followed
-
-### Code Review
-- [ ] No layer boundary violations
-- [ ] Constructor injection used
-
----
-
-## Project-Specific Guidance (Simple POS)
-
-jpackage for deb, msi, dmg.
-
----
-
-## Recommended Reading
-- [Java 21 Docs](https://docs.oracle.com/en/java/javase/21/)  
-- [OpenJDK JEPs](https://openjdk.org/projects/jdk/21/)
-
----
-
-## AI/Agent Guide
-
-### Strict Conventions
-- Follow all rules above
-- Java 21 features (records, sealed, virtual threads, pattern matching)
-- Constructor injection only; no static mutable state
-
-### Preferred Libraries
-- See references/canonical-stack.yaml
-
-### Example Prompts
-
-```
-Implement shading-and-packaging in the Simple POS following the rules above.
-Use Java 21 features where applicable.
-```
-
-### Code Templates
-
-See canonical-stack.yaml for dependencies.
+- dependency-management — managing versions before shading
+- jpackage-basics — native packaging alternative
+- reproducible-builds — ensuring jar is bit-for-bit identical

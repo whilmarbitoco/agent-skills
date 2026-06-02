@@ -1,89 +1,46 @@
 ---
 name: sequenced-collections
-description: "Use when working with SequencedCollection, SequencedSet, SequencedMap (JEP 431)."
-category: java
-tags:
-  - java-21
-  - core-java
+description: >
+  Extends agent's knowledge of Java 21 SequencedCollection, SequencedSet, and
+  SequencedMap interfaces. Use when you need first/last element access, reversed
+  iteration, or add/remove at both ends of a collection.
+compatibility: Java 21+
+metadata:
+  domain: core-java
+  level: beginner
+  stack: [java-21]
+  version: "1.0.0"
 ---
 
-# Sequenced Collections API
+# Sequenced Collections (JEP 431)
 
-**Skill ID:** `sequenced-collections`  
-**Domain:** `core-java`  
-**Level:** beginner  
-**Version:** 1.0.0  
-**Last Updated:** 2026-06-01
+Java 21 introduced `SequencedCollection`, `SequencedSet`, and `SequencedMap` to
+unify access to the first and last elements and provide a `reversed()` view.
 
-**Stack:** `java-21, maven`  
-**POS Guidance:** Replace get(0)/get(size-1) in POS list views.
+## Interfaces
 
----
+- `SequencedCollection<E>` — extends `Collection`, adds `getFirst()`, `getLast()`, `addFirst()`, `addLast()`, `removeFirst()`, `removeLast()`, `reversed()`
+- `SequencedSet<E>` — sequenced `Set` (no duplicates, so addFirst/Left are no-ops on existing elements)
+- `SequencedMap<K,V>` — extends `Map`, adds `sequencedKeySet()`, `sequencedValues()`, `sequencedEntrySet()`, `putFirst()`, `putLast()`, `pollFirstEntry()`, `pollLastEntry()`, `reversed()`
 
-## Purpose
+## Implementations (already implement these interfaces)
 
-Use when working with SequencedCollection, SequencedSet, SequencedMap (JEP 431).
+- `ArrayList`, `LinkedList` → `SequencedCollection`
+- `LinkedHashSet` → `SequencedSet`
+- `LinkedHashMap`, `TreeMap` → `SequencedMap`
 
----
+## Rules
 
-## Concepts Covered
+1. Use `getFirst()` / `getLast()` instead of `get(0)` / `get(size()-1)` — clearer, no index math.
+2. Use `reversed()` for reverse iteration instead of manual index-based loops.
+3. Prefer `LinkedHashSet` / `LinkedHashMap` over `HashSet` / `HashMap` when insertion order matters.
+4. `addFirst` / `addLast` on `LinkedList` are O(1); on `ArrayList` they are O(n) — choose accordingly.
+5. Use `SequencedMap` in method signatures when order is part of the contract.
 
-- **SequencedCollection**
-- **reversed()**
-- **getFirst()**
-- **getLast()**
+## Anti-patterns
 
----
+See [anti-patterns.md](./anti-patterns.md).
 
-## Rules / Best Practices
+## Related
 
-1. Use reversed() for backward iteration
-2. Prefer getFirst/getLast over get(0)/get(size-1)
-
----
-
-## Checklists
-
-### Implementation
-- [ ] Follow all rules above
-- [ ] Java 21 features used where applicable
-- [ ] POS domain guidance followed
-
-### Code Review
-- [ ] No layer boundary violations
-- [ ] Constructor injection used
-
----
-
-## Project-Specific Guidance (Simple POS)
-
-Replace get(0)/get(size-1) in POS list views.
-
----
-
-## Recommended Reading
-- [Java 21 Docs](https://docs.oracle.com/en/java/javase/21/)  
-- [OpenJDK JEPs](https://openjdk.org/projects/jdk/21/)
-
----
-
-## AI/Agent Guide
-
-### Strict Conventions
-- Follow all rules above
-- Java 21 features (records, sealed, virtual threads, pattern matching)
-- Constructor injection only; no static mutable state
-
-### Preferred Libraries
-- See references/canonical-stack.yaml
-
-### Example Prompts
-
-```
-Implement sequenced-collections in the Simple POS following the rules above.
-Use Java 21 features where applicable.
-```
-
-### Code Templates
-
-See canonical-stack.yaml for dependencies.
+- collections-best-practices — List.of(), Map.of(), copyOf()

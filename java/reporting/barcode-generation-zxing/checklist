@@ -1,0 +1,11 @@
+# Checklist
+
+## Implementation
+- [ ] BufferedImage to JavaFX Image (no file I/O)
+- [ ] Error correction level set (M or H for receipts)
+- [ ] Size adapts to container
+- [ ] Supports QR Code and Code128
+
+## Code Review
+- [ ] No hardcoded sizes
+- [ ] No temp files created

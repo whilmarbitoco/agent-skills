@@ -1,88 +1,42 @@
 ---
 name: navigation-patterns
-description: "Use when implementing KickStartFX navigation between screens."
-category: java
-tags:
-  - java-21
-  - ui-kickstartfx
+description: >
+  Extends agent's knowledge of JavaFX view navigation and routing patterns.
+  Use when designing screen-to-screen flows, implementing breadcrumbs, or
+  managing back/forward navigation history in a desktop POS app.
+compatibility: Java 21+
+metadata:
+  domain: ui-kickstartfx
+  level: intermediate
+  stack: [java-21, javafx-21]
+  version: "1.0.0"
 ---
 
 # Navigation Patterns
 
-**Skill ID:** `navigation-patterns`  
-**Domain:** `ui-kickstartfx`  
-**Level:** intermediate  
-**Version:** 1.0.0  
-**Last Updated:** 2026-06-01
+Decouple view switching from business logic. A navigation service owns the
+routing table and history stack; controllers request navigation by route key.
 
-**Stack:** `java-21, maven`  
-**POS Guidance:** Sidebar: Dashboard, Inventory, Sales, Reports, Sessions.
+## Concepts
 
----
+- **Route registry**: `Map<Route, Supplier<Node>>` or Supplier<Parent> for lazy loading
+- **Navigation service**: singleton or injected port that `setRoot(Node)` on the scene
+- **Breadcrumb stack**: `Deque<Route>` tracking navigation history for back-button support
+- **Parameterized routes**: pass a `Map<String, Object>` context instead of coupling controllers
 
-## Purpose
+## Rules
 
-Use when implementing KickStartFX navigation between screens.
+1. Controllers never directly instantiate other controllers — go through the navigation service.
+2. Use a sealed interface for `Route` so all known destinations are compile-time checked.
+3. Lazy-load views — do not construct all FXML screens at startup.
+4. Maintain a `Deque<Route>` history for back navigation; cap depth at 20 entries.
+5. Pass context between screens via a shared `NavigationContext` map, never via static singletons.
 
----
+## Anti-patterns
 
-## Concepts Covered
+See [anti-patterns.md](./anti-patterns.md).
 
-- **View registration**
-- **View switching**
-- **Sidebar nav**
+## Related
 
----
-
-## Rules / Best Practices
-
-1. Register all views in workspace config
-2. Use workspace.navigateTo()
-
----
-
-## Checklists
-
-### Implementation
-- [ ] Follow all rules above
-- [ ] Java 21 features used where applicable
-- [ ] POS domain guidance followed
-
-### Code Review
-- [ ] No layer boundary violations
-- [ ] Constructor injection used
-
----
-
-## Project-Specific Guidance (Simple POS)
-
-Sidebar: Dashboard, Inventory, Sales, Reports, Sessions.
-
----
-
-## Recommended Reading
-- [Java 21 Docs](https://docs.oracle.com/en/java/javase/21/)  
-- [OpenJDK JEPs](https://openjdk.org/projects/jdk/21/)
-
----
-
-## AI/Agent Guide
-
-### Strict Conventions
-- Follow all rules above
-- Java 21 features (records, sealed, virtual threads, pattern matching)
-- Constructor injection only; no static mutable state
-
-### Preferred Libraries
-- See references/canonical-stack.yaml
-
-### Example Prompts
-
-```
-Implement navigation-patterns in the Simple POS following the rules above.
-Use Java 21 features where applicable.
-```
-
-### Code Templates
-
-See canonical-stack.yaml for dependencies.
+- workspace-layout — project structure makes navigation modules possible
+- component-composition — building reusable view fragments

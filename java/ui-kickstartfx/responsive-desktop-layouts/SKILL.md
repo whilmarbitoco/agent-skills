@@ -1,88 +1,44 @@
 ---
 name: responsive-desktop-layouts
-description: "Use when making JavaFX desktop layouts responsive."
-category: java
-tags:
-  - java-21
-  - ui-kickstartfx
+description: >
+  Extends agent's knowledge of responsive layout techniques for JavaFX desktop
+  apps. Use when adapting the UI to different screen sizes, implementing
+  breakpoint-like behavior, or ensuring the app works on both laptop and
+  dual-monitor setups.
+compatibility: Java 21+
+metadata:
+  domain: ui-kickstartfx
+  level: intermediate
+  stack: [java-21, javafx-21]
+  version: "1.0.0"
 ---
 
 # Responsive Desktop Layouts
 
-**Skill ID:** `responsive-desktop-layouts`  
-**Domain:** `ui-kickstartfx`  
-**Level:** intermediate  
-**Version:** 1.0.0  
-**Last Updated:** 2026-06-01
+JavaFX has no built-in media queries. Responsiveness comes from binding `Pane`
+dimensions to observable window properties and toggling pseudo-classes or layout
+strategies at thresholds.
 
-**Stack:** `java-21, maven`  
-**POS Guidance:** Min 1024x768. Sidebar collapses below 900px.
+## Concepts
 
----
+- **Binding-based sizing**: `prefWidthProperty().bind(scene.widthProperty().multiply(0.3))`
+- **Breakpoint detection**: listen to `widthProperty()` and set a `PseudoClass` when crossing thresholds
+- **FlowPane / TilePane**: auto-wrapping containers that respond to container width without manual logic
+- **Side panel pinning**: toggle between overlay (small screen) and docked modes (large screen)
 
-## Purpose
+## Rules
 
-Use when making JavaFX desktop layouts responsive.
+1. Prefer binding dimensions over hard-coded `prefWidth = 300` values.
+2. Use `FlowPane` or `TilePane` for card grids — they auto-wrap without explicit resize logic.
+3. Define three breakpoints: `< 1024px` (compact), `< 1440px` (medium), `≥ 1440px` (expanded).
+4. Collapse the sidebar to icon-only below the compact breakpoint using a `PseudoClass` toggle.
+5. Never use `Platform.runLater` for layout — use bindings or `InvalidationListener`.
 
----
+## Anti-patterns
 
-## Concepts Covered
+See [anti-patterns.md](./anti-patterns.md).
 
-- **Binding to scene width**
-- **Min-max constraints**
-- **Breakpoints**
+## Related
 
----
-
-## Rules / Best Practices
-
-1. Use binding not listeners
-2. Set min/max sizes on regions
-
----
-
-## Checklists
-
-### Implementation
-- [ ] Follow all rules above
-- [ ] Java 21 features used where applicable
-- [ ] POS domain guidance followed
-
-### Code Review
-- [ ] No layer boundary violations
-- [ ] Constructor injection used
-
----
-
-## Project-Specific Guidance (Simple POS)
-
-Min 1024x768. Sidebar collapses below 900px.
-
----
-
-## Recommended Reading
-- [Java 21 Docs](https://docs.oracle.com/en/java/javase/21/)  
-- [OpenJDK JEPs](https://openjdk.org/projects/jdk/21/)
-
----
-
-## AI/Agent Guide
-
-### Strict Conventions
-- Follow all rules above
-- Java 21 features (records, sealed, virtual threads, pattern matching)
-- Constructor injection only; no static mutable state
-
-### Preferred Libraries
-- See references/canonical-stack.yaml
-
-### Example Prompts
-
-```
-Implement responsive-desktop-layouts in the Simple POS following the rules above.
-Use Java 21 features where applicable.
-```
-
-### Code Templates
-
-See canonical-stack.yaml for dependencies.
+- sidebar-shell-architecture — shell adapts sidebar visibility
+- theme-customization — CSS pseudo-classes drive responsive style changes

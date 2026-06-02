@@ -1,0 +1,10 @@
+# Encryption Quick Reference
+
+| Component | Value |
+|-----------|-------|
+| Algorithm | AES-256-GCM |
+| Key derivation | PBKDF2WithHmacSHA256 |
+| Iterations | 100,000 |
+| IV length | 12 bytes (random) |
+| Tag length | 128 bits |
+| Salt | 16 bytes (stored with encrypted data) |

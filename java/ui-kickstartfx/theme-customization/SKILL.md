@@ -1,88 +1,42 @@
 ---
 name: theme-customization
-description: "Use when customizing KickStartFX appearance."
-category: java
-tags:
-  - java-21
-  - ui-kickstartfx
+description: >
+  Extends agent's knowledge of JavaFX CSS theming, custom properties, and
+  palette management. Use when creating brand themes, implementing light/dark
+  mode switches, or structuring CSS for maintainability.
+compatibility: Java 21+
+metadata:
+  domain: ui-kickstartfx
+  level: beginner
+  stack: [java-21, javafx-21]
+  version: "1.0.0"
 ---
 
 # Theme Customization
 
-**Skill ID:** `theme-customization`  
-**Domain:** `ui-kickstartfx`  
-**Level:** intermediate  
-**Version:** 1.0.0  
-**Last Updated:** 2026-06-01
+JavaFX CSS uses custom looked-up colors and variables set on the scene graph.
+All visual tokens live in CSS themes — controllers never call `setStyle()`.
 
-**Stack:** `java-21, maven`  
-**POS Guidance:** Custom blue accent, custom font, dark sidebar.
+## Concepts
 
----
+- **Looked-up colors**: `-fx-primary`, `-fx-surface` — defined in root CSS, referenced everywhere
+- **CSS variables**: `--spacing-unit: 8px;` — reused across rules
+- **Theme files**: `light.css`, `dark.css`, `brand.css` — layered on `<scene>.getStylesheets()`
+- **Programmatic switch**: `scene.getStylesheets().clear()` then re-add selected theme files
 
-## Purpose
+## Rules
 
-Use when customizing KickStartFX appearance.
+1. Define all colors as looked-up colors in a `brand.css` base theme. Never hardcode hex in component rules.
+2. Set theme stylesheets on the `Scene`, not on individual nodes.
+3. Use `rem`-like spacing units via CSS variables — don't mix pixel values across rules.
+4. Load theme files from external JAR or config dir so merchants can customize without recompiling.
+5. Never use `node.setStyle("-fx-…")` in Java code — use pseudo-classes or toggle stylesheets instead.
 
----
+## Anti-patterns
 
-## Concepts Covered
+See [anti-patterns.md](./anti-patterns.md).
 
-- **CSS variables**
-- **Color scheme**
-- **Font configuration**
+## Related
 
----
-
-## Rules / Best Practices
-
-1. Use KickStartFX theme API
-2. Override CSS variables for branding
-
----
-
-## Checklists
-
-### Implementation
-- [ ] Follow all rules above
-- [ ] Java 21 features used where applicable
-- [ ] POS domain guidance followed
-
-### Code Review
-- [ ] No layer boundary violations
-- [ ] Constructor injection used
-
----
-
-## Project-Specific Guidance (Simple POS)
-
-Custom blue accent, custom font, dark sidebar.
-
----
-
-## Recommended Reading
-- [Java 21 Docs](https://docs.oracle.com/en/java/javase/21/)  
-- [OpenJDK JEPs](https://openjdk.org/projects/jdk/21/)
-
----
-
-## AI/Agent Guide
-
-### Strict Conventions
-- Follow all rules above
-- Java 21 features (records, sealed, virtual threads, pattern matching)
-- Constructor injection only; no static mutable state
-
-### Preferred Libraries
-- See references/canonical-stack.yaml
-
-### Example Prompts
-
-```
-Implement theme-customization in the Simple POS following the rules above.
-Use Java 21 features where applicable.
-```
-
-### Code Templates
-
-See canonical-stack.yaml for dependencies.
+- dark-mode-strategy — runtime theme switching
+- responsive-desktop-layouts — layout tokens pair with theme spacing

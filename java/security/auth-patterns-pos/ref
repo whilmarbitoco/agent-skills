@@ -1,0 +1,9 @@
+# Auth Quick Reference
+
+| Concept | Implementation |
+|---------|---------------|
+| Password hashing | BCrypt (cost 12) |
+| Session | UUID token + 8h expiry |
+| RBAC | Role enum + Permission enum |
+| Rate limit | 5 attempts, 15min lockout |
+| Logout | Remove token from sessions map |

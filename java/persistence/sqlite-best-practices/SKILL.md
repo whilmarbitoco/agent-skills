@@ -1,90 +1,49 @@
 ---
 name: sqlite-best-practices
-description: "Use when working with SQLite in a desktop application."
-category: java
-tags:
-  - java-21
-  - persistence
+description: >
+  Extends agent's knowledge of using SQLite effectively in Java:
+  WAL mode, transactions, indexes, prepared statements, and pitfalls.
+  Use when working with embedded SQLite databases or optimizing query performance.
+compatibility: Java 21+
+metadata:
+  domain: persistence
+  level: intermediate
+  stack: [java-21, sqlite-3.45, ebean-15, slf4j-2]
+  version: "1.0.0"
 ---
 
-# SQLite Best Practices for Desktop Apps
+# SQLite Best Practices
 
-**Skill ID:** `sqlite-best-practices`  
-**Domain:** `persistence`  
-**Level:** intermediate  
-**Version:** 1.0.0  
-**Last Updated:** 2026-06-01
+SQLite is an embedded, zero-config RDBMS ideal for
+desktop applications, local caches, and small-to-medium datasets.
+This skill covers Java-specific integration patterns.
 
-**Stack:** `java-21, maven`  
-**POS Guidance:** DB in app data dir. WAL mode. Daily backup.
+## Concepts
 
----
+- **WAL mode** — Write-Ahead Logging for concurrent reads + writes
+- **Busy timeout** — wait for lock instead of failing immediately
+- **Prepared statements** — reuse compiled SQL, prevent injection
+- **Indexes** — add on columns used in WHERE, JOIN, ORDER BY
+- **ANALYZE** — updates query planner statistics after bulk inserts
+- **PRAGMA journal_mode=WAL** — enable at connection creation
 
-## Purpose
+## Rules
 
-Use when working with SQLite in a desktop application.
+1. Always enable WAL mode: `PRAGMA journal_mode=WAL`.
+2. Set busy timeout: `PRAGMA busy_timeout=5000` (5 seconds).
+3. Use `PreparedStatement` or parameterized queries — never string concat.
+4. Wrap related operations in explicit transactions (`BEGIN`/`COMMIT`).
+5. Run `ANALYZE` after bulk inserts for optimal query plans.
+6. Add indexes on foreign key columns and frequently filtered columns.
+7. Use `try-with-resources` for all `Connection`, `Statement`, `ResultSet`.
+8. Avoid `SELECT *` — specify only needed columns.
 
----
+## Anti-patterns
 
-## Concepts Covered
+See [anti-patterns.md](./anti-patterns.md).
 
-- **WAL mode**
-- **File location**
-- **Backup**
-- **Thread safety**
+## Related
 
----
-
-## Rules / Best Practices
-
-1. Enable WAL mode
-2. Store DB in user home directory
-3. Implement periodic backup
-
----
-
-## Checklists
-
-### Implementation
-- [ ] Follow all rules above
-- [ ] Java 21 features used where applicable
-- [ ] POS domain guidance followed
-
-### Code Review
-- [ ] No layer boundary violations
-- [ ] Constructor injection used
-
----
-
-## Project-Specific Guidance (Simple POS)
-
-DB in app data dir. WAL mode. Daily backup.
-
----
-
-## Recommended Reading
-- [Java 21 Docs](https://docs.oracle.com/en/java/javase/21/)  
-- [OpenJDK JEPs](https://openjdk.org/projects/jdk/21/)
-
----
-
-## AI/Agent Guide
-
-### Strict Conventions
-- Follow all rules above
-- Java 21 features (records, sealed, virtual threads, pattern matching)
-- Constructor injection only; no static mutable state
-
-### Preferred Libraries
-- See references/canonical-stack.yaml
-
-### Example Prompts
-
-```
-Implement sqlite-best-practices in the Simple POS following the rules above.
-Use Java 21 features where applicable.
-```
-
-### Code Templates
-
-See canonical-stack.yaml for dependencies.
+- ebean-setup — Ebean + SQLite integration
+- ebean-queries — query building
+- database-migrations — schema versioning

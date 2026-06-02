@@ -1,88 +1,67 @@
----
-name: receipt-generation
-description: "Use when generating receipts with JasperReports."
-category: java
-tags:
-  - java-21
-  - pos-domain
----
-
 # Receipt Generation
 
-**Skill ID:** `receipt-generation`  
-**Domain:** `pos-domain`  
-**Level:** intermediate  
-**Version:** 1.0.0  
-**Last Updated:** 2026-06-01
-
-**Stack:** `java-21, maven`  
-**POS Guidance:** Receipt: header, body, footer with barcode.
-
----
+## Skill Metadata
+```yaml
+name: receipt-generation
+domain: pos-domain
+language: java
+version: "1.0.0"
+description: >
+  Generate POS receipts using JasperReports templates, output to PDF and thermal
+  printers, with QR codes for digital verification.
+topics:
+  - JasperReports template design
+  - PDF receipt generation
+  - thermal printer output (ESC/POS)
+  - QR code embedding on receipts
+  - receipt data modeling
+constraints:
+  - Use Java 21 records for receipt data objects
+  - All monetary values use BigDecimal with PHP currency
+  - Constructor injection for all services
+  - Template compilation cached for performance
+```
 
 ## Purpose
 
-Use when generating receipts with JasperReports.
+Generate professional POS receipts from transaction data. Supports PDF output
+(for email/archival), thermal printer output (ESC/POS byte commands), and
+includes a QR code linking to a digital receipt verification URL.
 
----
+## Core Concepts
 
-## Concepts Covered
+### JasperReports Template
+- `.jrxml` template defines receipt layout: header, line items, totals, footer
+- Compiled once to `JasperReport` and cached (compilation is expensive)
+- Data supplied via `JRBeanCollectionDataSource` from receipt records
+- Sub-reports for tax breakdown, payment details
 
-- **JasperReports**
-- **Thermal printer**
-- **Receipt template**
+### Receipt Data Model
+- `Receipt` record: transaction ID, items, totals, taxes, payment, timestamp
+- `ReceiptItem` record: SKU, description, quantity, unit price, discount, line total
+- `ReceiptTotals` record: subtotal, tax total, discount total, grand total, amount tendered, change
+- All monetary fields use `Money` (BigDecimal + Currency)
 
----
+### PDF Output
+- `JasperExportManager.exportReportToPdfStream()` for byte[] or OutputStream
+- Suitable for email attachment, archival, customer copy
 
-## Rules / Best Practices
+### Thermal Printer Output (ESC/POS)
+- Convert receipt to ESC/POS byte commands for direct printer communication
+- Support for: bold, underline, double-height, barcode, QR code, cut paper
+- USB/serial printer communication via `javax.usb` or `jSerialComm`
 
-1. Use jrxml templates
-2. Support raw ESC/POS printing
+### QR Code
+- ZXing library generates QR code as `BufferedImage`
+- QR contains URL to digital receipt verification endpoint
+- Embedded in JasperReports template as image element
 
----
+## When to Use This Skill
+- Generating customer receipts at POS checkout
+- Email receipt delivery (PDF attachment)
+- Kitchen/bar printer tickets
+- Digital receipt verification via QR scan
 
-## Checklists
-
-### Implementation
-- [ ] Follow all rules above
-- [ ] Java 21 features used where applicable
-- [ ] POS domain guidance followed
-
-### Code Review
-- [ ] No layer boundary violations
-- [ ] Constructor injection used
-
----
-
-## Project-Specific Guidance (Simple POS)
-
-Receipt: header, body, footer with barcode.
-
----
-
-## Recommended Reading
-- [Java 21 Docs](https://docs.oracle.com/en/java/javase/21/)  
-- [OpenJDK JEPs](https://openjdk.org/projects/jdk/21/)
-
----
-
-## AI/Agent Guide
-
-### Strict Conventions
-- Follow all rules above
-- Java 21 features (records, sealed, virtual threads, pattern matching)
-- Constructor injection only; no static mutable state
-
-### Preferred Libraries
-- See references/canonical-stack.yaml
-
-### Example Prompts
-
-```
-Implement receipt-generation in the Simple POS following the rules above.
-Use Java 21 features where applicable.
-```
-
-### Code Templates
-
-See canonical-stack.yaml for dependencies.
+## Related Skills
+- `inventory-transaction-modeling` — transaction data feeds receipt generation
+- `cash-session-management` — session context for receipt header (cashier, register)

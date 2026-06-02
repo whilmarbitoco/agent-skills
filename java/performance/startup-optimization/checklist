@@ -1,0 +1,11 @@
+# Checklist
+
+## Implementation
+- [ ] Splash screen shown during Ebean init
+- [ ] Services lazy-loaded (not in Application.init)
+- [ ] CDS archive generated and shipped
+- [ ] CSS compiled to binary
+
+## Code Review
+- [ ] Cold start < 3 seconds on mid-range hardware
+- [ ] No work on FX thread during startup

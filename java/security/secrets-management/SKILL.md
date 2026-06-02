@@ -1,89 +1,42 @@
 ---
 name: secrets-management
-description: "Use when handling API keys or credentials in a desktop app."
-category: java
-tags:
-  - java-21
-  - security
+description: >
+  Extends agent's knowledge of storing and accessing secrets securely in a Java POS
+  application. Use when handling API keys, database passwords, or encryption keys.
+compatibility: Java 21+
+metadata:
+  domain: security
+  level: intermediate
+  stack: [java-21, slf4j-2]
+  version: "1.0.0"
 ---
 
 # Secrets Management
 
-**Skill ID:** `secrets-management`  
-**Domain:** `security`  
-**Level:** intermediate  
-**Version:** 1.0.0  
-**Last Updated:** 2026-06-01
+POS applications handle payment credentials, DB passwords, and API keys.
+Hardcoding or storing them in plain config files is a critical vulnerability.
+This skill covers in-memory handling and externalized secret stores.
 
-**Stack:** `java-21, maven`  
-**POS Guidance:** .env for dev. OS keyring for production.
+## Concepts
 
----
+- **SecretStore** abstraction — in-memory map for dev, env vars or vault for prod
+- **char[] over String** — Strings are immutable and linger in the intern pool; char[] can be zeroed
+- **Short-lived tokens** — fetch once, use, discard — never cache credentials in static fields
+- **Environment variables** — inject secrets at runtime, never commit to VCS
 
-## Purpose
+## Rules
 
-Use when handling API keys or credentials in a desktop app.
+1. Never hardcode credentials in source code or properties files checked into VCS.
+2. Store secrets in environment variables or a secret manager; read at startup.
+3. Use `char[]` for password fields so memory can be zeroed after use.
+4. Use a `SecretStore` interface with pluggable backend (env-var / file / vault).
+5. Log only the presence/absence of a secret, never its value.
+6. Zero out `char[]` arrays immediately after use with `Arrays.fill`.
 
----
+## Anti-patterns
 
-## Concepts Covered
+See [anti-patterns.md](./anti-patterns.md).
 
-- **dotenv**
-- **Environment variables**
-- **Keyring**
+## Related
 
----
-
-## Rules / Best Practices
-
-1. Use .env for dev
-2. Use OS keyring for production
-3. Never commit .env
-
----
-
-## Checklists
-
-### Implementation
-- [ ] Follow all rules above
-- [ ] Java 21 features used where applicable
-- [ ] POS domain guidance followed
-
-### Code Review
-- [ ] No layer boundary violations
-- [ ] Constructor injection used
-
----
-
-## Project-Specific Guidance (Simple POS)
-
-.env for dev. OS keyring for production.
-
----
-
-## Recommended Reading
-- [Java 21 Docs](https://docs.oracle.com/en/java/javase/21/)  
-- [OpenJDK JEPs](https://openjdk.org/projects/jdk/21/)
-
----
-
-## AI/Agent Guide
-
-### Strict Conventions
-- Follow all rules above
-- Java 21 features (records, sealed, virtual threads, pattern matching)
-- Constructor injection only; no static mutable state
-
-### Preferred Libraries
-- See references/canonical-stack.yaml
-
-### Example Prompts
-
-```
-Implement secrets-management in the Simple POS following the rules above.
-Use Java 21 features where applicable.
-```
-
-### Code Templates
-
-See canonical-stack.yaml for dependencies.
+- config-encrypted — encrypting configuration at rest

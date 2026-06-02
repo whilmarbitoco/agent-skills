@@ -1,0 +1,12 @@
+# Checklist
+
+## Implementation
+- [ ] BCrypt password hashing (cost factor 12)
+- [ ] Session token with 8-hour expiry
+- [ ] Role-based access control (RBAC)
+- [ ] Login rate limiting (5 attempts, 15min lockout)
+
+## Code Review
+- [ ] No plain text passwords anywhere
+- [ ] No hardcoded role strings
+- [ ] Session invalidation on logout

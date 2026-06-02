@@ -1,0 +1,30 @@
+# Stock Movement Anti-Patterns
+
+## Deducting stock without transaction
+
+```java
+// WRONG — if save fails, stock is still deducted
+product.setStock(product.getStock() - qty);
+productRepo.save(product); // fails? stock already gone
+```
+
+**Wrap in transaction: `database.beginTransaction()` ... `commit()`.**
+
+## No audit trail — can't trace stock changes
+
+```java
+// WRONG — just update the number
+product.setStock(newStock);
+```
+
+**Create StockMovement record for every change. Who, what, when, why.**
+
+## Two update types doing the same thing
+
+```java
+// WRONG — manual adjustment vs sale use different code paths
+public void adjustStock(long id, int delta) { ... }
+public void sellProduct(long id, int qty) { ... } // duplicates logic
+```
+
+**Single movement creation flow. Type differentiates behavior.

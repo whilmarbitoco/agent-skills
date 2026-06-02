@@ -1,89 +1,39 @@
 ---
 name: memory-profiling
-description: "Use when diagnosing memory leaks in JavaFX apps."
-category: java
-tags:
-  - java-21
-  - performance
+description: >
+  Extends agent's knowledge of JavaFX memory leak detection and profiling.
+  Use when diagnosing high memory usage, UI slowdowns, or OutOfMemoryError.
+compatibility: Java 21+
+metadata:
+  domain: performance
+  level: advanced
+  stack: [java-21, javafx]
+  version: "1.0.0"
 ---
 
-# Memory Profiling & Leak Detection
+# Memory Profiling
 
-**Skill ID:** `memory-profiling`  
-**Domain:** `performance`  
-**Level:** advanced  
-**Version:** 1.0.0  
-**Last Updated:** 2026-06-01
+JavaFX-specific memory leak patterns and tools to diagnose them.
 
-**Stack:** `java-21, maven`  
-**POS Guidance:** Common leak: binding not removed on screen close.
+## Core Concepts
+- Listener leaks — most common JavaFX memory leak
+- WeakListener / WeakChangeListener — automatic cleanup
+- Heap dumps — capture and analyze with VisualVM
+- Epsilon GC test — isolate memory leaks
 
----
+## Rules
+1. Check for listener leaks first — `Platform.runLater` inside listeners, anonymous lambdas that capture Scene
+2. Use WeakListener for bindings that outlive the observable
+3. Monitor with VisualVM during development — look for growing `ObservableList` or `Node` counts
+4. Test with `-XX:+HeapDumpOnOutOfMemoryError` — get a dump for post-mortem analysis
+5. Unbind properties when screen closes — don't hold references to disposed UI
 
-## Purpose
+## Anti-patterns
+- Anonymous lambdas capturing Node/Scene references
+- Forgetting to remove listeners on screen close
+- Using `Platform.runLater(Runnable)` stored in a list that never clears
 
-Use when diagnosing memory leaks in JavaFX apps.
-
----
-
-## Concepts Covered
-
-- **Heap dump**
-- **VisualVM**
-- **JavaFX listener leaks**
-
----
-
-## Rules / Best Practices
-
-1. Check for listener leaks
-2. Use WeakListener
-3. Monitor with VisualVM
-
----
-
-## Checklists
-
-### Implementation
-- [ ] Follow all rules above
-- [ ] Java 21 features used where applicable
-- [ ] POS domain guidance followed
-
-### Code Review
-- [ ] No layer boundary violations
-- [ ] Constructor injection used
-
----
-
-## Project-Specific Guidance (Simple POS)
-
-Common leak: binding not removed on screen close.
-
----
-
-## Recommended Reading
-- [Java 21 Docs](https://docs.oracle.com/en/java/javase/21/)  
-- [OpenJDK JEPs](https://openjdk.org/projects/jdk/21/)
-
----
-
-## AI/Agent Guide
-
-### Strict Conventions
-- Follow all rules above
-- Java 21 features (records, sealed, virtual threads, pattern matching)
-- Constructor injection only; no static mutable state
-
-### Preferred Libraries
-- See references/canonical-stack.yaml
-
-### Example Prompts
-
-```
-Implement memory-profiling in the Simple POS following the rules above.
-Use Java 21 features where applicable.
-```
-
-### Code Templates
-
-See canonical-stack.yaml for dependencies.
+## Relates to
+- jvm-tuning
+- javafx-threading
+- javafx-observable-state

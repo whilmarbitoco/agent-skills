@@ -1,0 +1,13 @@
+# Secrets Quick Reference
+
+| Environment | Storage |
+|------------|---------|
+| Dev | .env file (gitignored) |
+| CI/CD | CI secret variables |
+| Prod | OS keyring / encrypted config |
+
+| Secret Type | Example |
+|------------|---------|
+| DB password | Encrypted in config or keyring |
+| API key | Keyring |
+| Encryption key | Derived from user password |

@@ -1,0 +1,51 @@
+package com.simplepos.security;
+
+import org.mindrot.jbcrypt.BCrypt;
+import java.time.*;
+import java.util.*;
+
+public class AuthService {
+
+    private final UserRepository userRepo;
+    private final Map<String, Session> sessions = new HashMap<>();
+
+    public AuthService(UserRepository userRepo) {
+        this.userRepo = userRepo;
+    }
+
+    public Optional<String> login(String username, String password) {
+        User user = userRepo.findByUsername(username).orElse(null);
+        if (user == null || !BCrypt.checkpw(password, user.getPasswordHash())) {
+            return Optional.empty();
+        }
+        String token = UUID.randomUUID().toString();
+        sessions.put(token, new Session(user.getId(), Instant.now().plus(Duration.ofHours(8))));
+        return Optional.of(token);
+    }
+
+    public Optional<User> authenticate(String token) {
+        Session session = sessions.get(token);
+        if (session == null || session.expiry().isBefore(Instant.now())) {
+            sessions.remove(token);
+            return Optional.empty();
+        }
+        return userRepo.findById(session.userId());
+    }
+
+    public void logout(String token) {
+        sessions.remove(token);
+    }
+
+    public record Session(Long userId, Instant expiry) {}
+}
+
+public enum Role {
+    CASHIER(Set.of(Permission.VIEW_PRODUCT, Permission.CREATE_SALE)),
+    ADMIN(Set.of(Permission.values()));
+
+    private final Set<Permission> permissions;
+    Role(Set<Permission> p) { this.permissions = p; }
+    public boolean hasPermission(Permission p) { return permissions.contains(p); }
+}
+
+public enum Permission { VIEW_PRODUCT, CREATE_SALE, DELETE_PRODUCT, VIEW_REPORTS, MANAGE_USERS }

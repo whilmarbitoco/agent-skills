@@ -1,0 +1,11 @@
+# Stock Movement Reference
+
+| Type | Qty Sign | Reference |
+|------|----------|-----------|
+| Purchase | + | poId |
+| Sale | - | saleId |
+| Adjustment | ± | reason |
+| Return | + | originalSaleId |
+| Loss | - | +reason |
+
+Balance = sum(product movements) at any point in time.

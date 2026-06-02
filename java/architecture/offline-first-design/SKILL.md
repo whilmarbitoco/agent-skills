@@ -1,88 +1,49 @@
 ---
 name: offline-first-design
-description: "Use when designing the POS to work without network connectivity."
-category: java
-tags:
-  - java-21
-  - architecture
+description: >
+  Extends agent's knowledge of offline-first architecture for Java desktop apps.
+  Use when the app must work without network, syncing to a server when available.
+  Local SQLite is the source of truth; remote is a mirror.
+compatibility: Java 21+
+metadata:
+  domain: architecture
+  level: advanced
+  stack: [java-21, sqlite, ebean-15, slf4j]
+  version: "1.0.0"
 ---
 
 # Offline-First Design
 
-**Skill ID:** `offline-first-design`  
-**Domain:** `architecture`  
-**Level:** advanced  
-**Version:** 1.0.0  
-**Last Updated:** 2026-06-01
+Local database is the system of record. Remote sync is asynchronous and best-effort.
 
-**Stack:** `java-21, maven`  
-**POS Guidance:** Simple POS works fully offline.
+## Core Principles
 
----
+1. **Local-first reads** — All queries hit SQLite. Never block on network.
+2. **Write locally, sync later** — Mutations write to local DB; a background sync pushes to server.
+3. **Conflict resolution** — Last-write-wins with vector clocks or server-authoritative timestamps.
+4. **Sync queue** — Pending operations stored in an `outbox` table; replayed on connectivity.
 
-## Purpose
-
-Use when designing the POS to work without network connectivity.
-
----
-
-## Concepts Covered
-
-- **Local database**
-- **Transaction queue**
-- **Sync strategies**
-
----
-
-## Rules / Best Practices
-
-1. All data stored locally in SQLite
-2. Never block UI waiting for network
-
----
-
-## Checklists
-
-### Implementation
-- [ ] Follow all rules above
-- [ ] Java 21 features used where applicable
-- [ ] POS domain guidance followed
-
-### Code Review
-- [ ] No layer boundary violations
-- [ ] Constructor injection used
-
----
-
-## Project-Specific Guidance (Simple POS)
-
-Simple POS works fully offline.
-
----
-
-## Recommended Reading
-- [Java 21 Docs](https://docs.oracle.com/en/java/javase/21/)  
-- [OpenJDK JEPs](https://openjdk.org/projects/jdk/21/)
-
----
-
-## AI/Agent Guide
-
-### Strict Conventions
-- Follow all rules above
-- Java 21 features (records, sealed, virtual threads, pattern matching)
-- Constructor injection only; no static mutable state
-
-### Preferred Libraries
-- See references/canonical-stack.yaml
-
-### Example Prompts
+## Architecture
 
 ```
-Implement offline-first-design in the Simple POS following the rules above.
-Use Java 21 features where applicable.
+UI → Service → LocalRepository (SQLite/Ebean)
+              ↕
+         SyncService (background thread)
+              ↕
+         RemoteClient (HTTP/REST)
+              ↕
+         Outbox table (pending ops)
 ```
 
-### Code Templates
+## Rules
 
-See canonical-stack.yaml for dependencies.
+- Every syncable entity has `localId`, `remoteId`, `updatedAt`, `syncStatus` columns.
+- Sync runs on virtual threads (`Thread.ofVirtual()`) — never blocks UI.
+- On conflict, prefer server timestamp; log the divergence.
+- Outbox pattern: write to outbox in same transaction as entity mutation.
+- Exponential backoff on sync failure; cap retries.
+
+## See also
+
+- service-repository-pattern — service/repo layer for local DB
+- event-driven-ui — notify UI of sync state changes

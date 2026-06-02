@@ -1,90 +1,49 @@
 ---
 name: dependency-management
-description: "Use when managing Maven dependencies and version conflicts."
-category: java
-tags:
-  - java-21
-  - maven
+description: >
+  Extends agent's knowledge of Maven dependency scopes, conflict
+  resolution, BOMs, and exclusions. Use when adding, upgrading, or
+  troubleshooting third-party libraries.
+compatibility: Java 21+
+metadata:
+  domain: maven
+  level: intermediate
+  stack: [java-21, maven-3.9]
+  version: "1.0.0"
 ---
 
-# Dependency Management & BOMs
+# Dependency Management
 
-**Skill ID:** `dependency-management`  
-**Domain:** `maven`  
-**Level:** intermediate  
-**Version:** 1.0.0  
-**Last Updated:** 2026-06-01
+Maven resolves transitive dependencies automatically. Conflicts are
+resolved by "nearest definition wins" — the version closest to your
+project in the dependency tree wins.
 
-**Stack:** `java-21, maven`  
-**POS Guidance:** Parent POM imports JavaFX and Ebean BOMs.
+## Concepts
 
----
+- **dependencyManagement** — centralizes versions; children omit `<version>`.
+- **BOM (Bill of Materials)** — a POM with `<scope>import</scope>` that
+  manages a library family's versions atomically.
+- **Exclusions** — `<exclusion>` removes a specific transitive dep.
+- **Scopes** — `compile`, `provided`, `runtime`, `test`, `import`.
+- **Enforcer plugin** — bans duplicate or conflicting versions.
 
-## Purpose
+## Rules
 
-Use when managing Maven dependencies and version conflicts.
+1. Use `<dependencyManagement>` in the parent POM for every third-party dep.
+2. Import BOMs (e.g., `ebean-bom`, `javafx-bom`) before other deps.
+3. Children never specify `<version>` — always inherit from management.
+4. Use `<exclusions>` to remove unwanted transitive deps (e.g., log4j → slf4j).
+5. Prefer `mvn dependency:tree` over guessing which version wins.
+6. Use `maven-enforcer-plugin` with `<dependencyConvergence>` in CI.
+7. Pin plugin versions in `<pluginManagement>` — never rely on defaults.
+8. Use `provided` scope for APIs supplied by the runtime (e.g., servlet-api).
 
----
+## Anti-patterns
 
-## Concepts Covered
+See [anti-patterns.md](./anti-patterns.md).
 
-- **dependencyManagement**
-- **BOM**
-- **Version conflicts**
-- **Exclusions**
+## Related
 
----
-
-## Rules / Best Practices
-
-1. Define all versions in parent POM
-2. Import BOMs for JavaFX and Ebean
-3. Never use LATEST or RELEASE
-
----
-
-## Checklists
-
-### Implementation
-- [ ] Follow all rules above
-- [ ] Java 21 features used where applicable
-- [ ] POS domain guidance followed
-
-### Code Review
-- [ ] No layer boundary violations
-- [ ] Constructor injection used
-
----
-
-## Project-Specific Guidance (Simple POS)
-
-Parent POM imports JavaFX and Ebean BOMs.
-
----
-
-## Recommended Reading
-- [Java 21 Docs](https://docs.oracle.com/en/java/javase/21/)  
-- [OpenJDK JEPs](https://openjdk.org/projects/jdk/21/)
-
----
-
-## AI/Agent Guide
-
-### Strict Conventions
-- Follow all rules above
-- Java 21 features (records, sealed, virtual threads, pattern matching)
-- Constructor injection only; no static mutable state
-
-### Preferred Libraries
-- See references/canonical-stack.yaml
-
-### Example Prompts
-
-```
-Implement dependency-management in the Simple POS following the rules above.
-Use Java 21 features where applicable.
-```
-
-### Code Templates
-
-See canonical-stack.yaml for dependencies.
+- multi-module-projects — reactor structure
+- shading-and-packaging — relocating deps into uber-jar
+- reproducible-builds — locking versions

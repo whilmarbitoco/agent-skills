@@ -1,87 +1,53 @@
 ---
 name: config-encryption
-description: "Use when storing sensitive configuration on disk."
-category: java
-tags:
-  - java-21
-  - security
+description: >
+  Extends agent's knowledge of encrypting configuration files at rest in
+  Java POS applications. Use when protecting database passwords, API
+  keys, or sensitive settings stored in local properties files.
+compatibility: Java 21+
+metadata:
+  domain: security
+  level: intermediate
+  stack: [java-21, slf4j-2]
+  version: "1.0.0"
 ---
 
 # Configuration Encryption
 
-**Skill ID:** `config-encryption`  
-**Domain:** `security`  
-**Level:** intermediate  
-**Version:** 1.0.0  
-**Last Updated:** 2026-06-01
+POS terminals store DB credentials and API keys in local config files.
+Leaving them in plain text means anyone with disk access can read payment
+gateway secrets. AES-256-GCM encryption with proper key derivation protects
+config at rest.
 
-**Stack:** `java-21, maven`  
-**POS Guidance:** DB password stored encrypted.
+## Concepts
 
----
+- **AES-256-GCM** — authenticated encryption; provides confidentiality +
+  integrity in one pass.
+- **PBKDF2 key derivation** — derives a 256-bit key from a master
+  password with a random salt and 600k iterations.
+- **IV/nonce** — 12-byte random initialization vector per encryption
+  operation; stored alongside ciphertext.
+- **Base64 encoding** — binary ciphertext + IV stored as hex or Base64
+  in `.properties`.
 
-## Purpose
+## Rules
 
-Use when storing sensitive configuration on disk.
+1. Never hardcode the master password or salt in source code.
+2. Generate a 12-byte random `SecureRandom` IV for every encryption
+   operation; prepend IV to ciphertext for storage.
+3. Use `PBKDF2WithHmacSHA256` with ≥600,000 iterations (OWASP 2023
+   recommendation).
+4. Clear `char[]` key material after use with `Arrays.fill`.
+5. Decrypt to `char[]` in memory, not `String`; zero immediately after
+   use.
+6. Rotate keys periodically — re-encrypt config with a new passphrase
+   on each terminal deployment.
 
----
+## Anti-patterns
 
-## Concepts Covered
+See [anti-patterns.md](./anti-patterns.md).
 
-- **AES encryption**
-- **Key derivation**
+## Related
 
----
-
-## Rules / Best Practices
-
-1. Encrypt sensitive config at rest
-2. Use AES-256-GCM
-
----
-
-## Checklists
-
-### Implementation
-- [ ] Follow all rules above
-- [ ] Java 21 features used where applicable
-- [ ] POS domain guidance followed
-
-### Code Review
-- [ ] No layer boundary violations
-- [ ] Constructor injection used
-
----
-
-## Project-Specific Guidance (Simple POS)
-
-DB password stored encrypted.
-
----
-
-## Recommended Reading
-- [Java 21 Docs](https://docs.oracle.com/en/java/javase/21/)  
-- [OpenJDK JEPs](https://openjdk.org/projects/jdk/21/)
-
----
-
-## AI/Agent Guide
-
-### Strict Conventions
-- Follow all rules above
-- Java 21 features (records, sealed, virtual threads, pattern matching)
-- Constructor injection only; no static mutable state
-
-### Preferred Libraries
-- See references/canonical-stack.yaml
-
-### Example Prompts
-
-```
-Implement config-encryption in the Simple POS following the rules above.
-Use Java 21 features where applicable.
-```
-
-### Code Templates
-
-See canonical-stack.yaml for dependencies.
+- secrets-management — runtime secret handling
+- auth-patterns-pos — authentication with encrypted credentials

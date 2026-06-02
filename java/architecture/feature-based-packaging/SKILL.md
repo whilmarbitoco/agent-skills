@@ -1,88 +1,55 @@
 ---
 name: feature-based-packaging
-description: "Use when deciding between package-by-layer vs package-by-feature."
-category: java
-tags:
-  - java-21
-  - architecture
+description: >
+  Extends agent's knowledge of feature-based Java package organization.
+  Use when grouping code by business capability (invoice, customer) instead
+  by technical layer (controller, service, model).
+compatibility: Java 21+
+metadata:
+  domain: architecture
+  level: intermediate
+  stack: [java-21, slf4j, ebean]
+  version: "1.0.0"
 ---
 
-# Feature-Based Package Organization
+# Feature-Based Packaging
 
-**Skill ID:** `feature-based-packaging`  
-**Domain:** `architecture`  
-**Level:** intermediate  
-**Version:** 1.0.0  
-**Last Updated:** 2026-06-01
+Group all code for a single business capability into one package tree instead of spreading it across technical layers.
 
-**Stack:** `java-21, maven`  
-**POS Guidance:** Features: inventory, sales, reports, sessions.
-
----
-
-## Purpose
-
-Use when deciding between package-by-layer vs package-by-feature.
-
----
-
-## Concepts Covered
-
-- **Feature modules**
-- **Package cohesion**
-- **Navigation boundaries**
-
----
-
-## Rules / Best Practices
-
-1. Group by feature first
-2. Each feature has own UI+service+repository
-
----
-
-## Checklists
-
-### Implementation
-- [ ] Follow all rules above
-- [ ] Java 21 features used where applicable
-- [ ] POS domain guidance followed
-
-### Code Review
-- [ ] No layer boundary violations
-- [ ] Constructor injection used
-
----
-
-## Project-Specific Guidance (Simple POS)
-
-Features: inventory, sales, reports, sessions.
-
----
-
-## Recommended Reading
-- [Java 21 Docs](https://docs.oracle.com/en/java/javase/21/)  
-- [OpenJDK JEPs](https://openjdk.org/projects/jdk/21/)
-
----
-
-## AI/Agent Guide
-
-### Strict Conventions
-- Follow all rules above
-- Java 21 features (records, sealed, virtual threads, pattern matching)
-- Constructor injection only; no static mutable state
-
-### Preferred Libraries
-- See references/canonical-stack.yaml
-
-### Example Prompts
+## Package Structure
 
 ```
-Implement feature-based-packaging in the Simple POS following the rules above.
-Use Java 21 features where applicable.
+com.shop.invoice/
+├── Invoice.java              record / entity
+├── InvoiceDto.java           API representation
+├── InvoiceService.java       business logic
+├── InvoiceRepository.java    data access
+├── InvoiceController.java    HTTP handler
+└── InvoiceMapper.java        DTO ↔ domain mapping
+
+com.shop.customer/
+├── Customer.java
+├── CustomerDto.java
+├── CustomerService.java
+├── CustomerRepository.java
+├── CustomerController.java
+└── CustomerMapper.java
 ```
 
-### Code Templates
+## Rules
 
-See canonical-stack.yaml for dependencies.
+- When layer counts get large (layers > 6, model > 8 classes), switch to this.
+- Cross-feature sharing goes in `common/` or `shared/` sub-packages.
+- Each feature package owns its API surface — minimize public classes.
+- Deep nesting is fine; wide flat packages are not.
+- Still enforce layer dependency rules *within* the feature package.
+
+## Anti-patterns
+
+- God packages that import from everything → split into sub-features.
+- Circular feature dependencies → introduce shared kernel or event bus.
+
+## See also
+
+- layered-architecture — the layered view still applies internally
+- domain-driven-structure-lite — DDD-lite variant of this idea

@@ -1,89 +1,42 @@
 ---
 name: jasperreports-basics
-description: "Use when creating JasperReports templates and generating reports."
-category: java
-tags:
-  - java-21
-  - reporting
+description: >
+  Extends agent's knowledge of generating reports with JasperReports in Java.
+  Use when designing receipts, daily-sales summaries, or inventory reports.
+compatibility: Java 21+
+metadata:
+  domain: reporting
+  level: intermediate
+  stack: [java-21, jasperreports-6, slf4j-2]
+  version: "1.0.0"
 ---
 
 # JasperReports Basics
 
-**Skill ID:** `jasperreports-basics`  
-**Domain:** `reporting`  
-**Level:** intermediate  
-**Version:** 1.0.0  
-**Last Updated:** 2026-06-01
+JasperReports is the standard Java library for pixel-perfect reporting.
+In POS it drives receipts, end-of-day summaries, and inventory reports.
+This skill covers compile-once datasets, parameter passing, and JavaBean data sources.
 
-**Stack:** `java-21, maven`  
-**POS Guidance:** Reports: daily sales, inventory, cash session.
+## Concepts
 
----
+- **.jrxml templates** — XML report designs compiled to `.jasper` at build time
+- **JasperCompileManager** — compiles .jrxml → .jasper (binary, reusable)
+- **JRBeanCollectionDataSource** — feeds Java records/objects as report rows
+- **Parameters map** — pass title, date range, station ID as key-value pairs
+- **Sub-reports** — embed line-item detail inside a header report
 
-## Purpose
+## Rules
 
-Use when creating JasperReports templates and generating reports.
+1. Pre-compile `.jrxml` → `.jasper` at build time or on first use; cache the result.
+2. Use `JRBeanCollectionDataSource` for Java collections — avoid SQL-in-report.
+3. Pass all runtime values (title, dates, store info) via parameters map.
+4. Design reports for paper width: 80mm (thermal) or A4 ( summaries).
+5. Sub-datasets for line items — each line item is a record in a collection field.
 
----
+## Anti-patterns
 
-## Concepts Covered
+See [anti-patterns.md](./anti-patterns.md).
 
-- **JRXML**
-- **JasperCompileManager**
-- **JRBeanCollectionDataSource**
-- **Subreports**
+## Related
 
----
-
-## Rules / Best Practices
-
-1. Design jrxml templates
-2. Compile on first load, cache compiled
-
----
-
-## Checklists
-
-### Implementation
-- [ ] Follow all rules above
-- [ ] Java 21 features used where applicable
-- [ ] POS domain guidance followed
-
-### Code Review
-- [ ] No layer boundary violations
-- [ ] Constructor injection used
-
----
-
-## Project-Specific Guidance (Simple POS)
-
-Reports: daily sales, inventory, cash session.
-
----
-
-## Recommended Reading
-- [Java 21 Docs](https://docs.oracle.com/en/java/javase/21/)  
-- [OpenJDK JEPs](https://openjdk.org/projects/jdk/21/)
-
----
-
-## AI/Agent Guide
-
-### Strict Conventions
-- Follow all rules above
-- Java 21 features (records, sealed, virtual threads, pattern matching)
-- Constructor injection only; no static mutable state
-
-### Preferred Libraries
-- See references/canonical-stack.yaml
-
-### Example Prompts
-
-```
-Implement jasperreports-basics in the Simple POS following the rules above.
-Use Java 21 features where applicable.
-```
-
-### Code Templates
-
-See canonical-stack.yaml for dependencies.
+- barcode-generation-zxing — QR/barcode embedding in reports

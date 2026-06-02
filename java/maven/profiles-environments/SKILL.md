@@ -1,88 +1,50 @@
 ---
 name: profiles-environments
-description: "Use when managing different build configurations for dev/test/prod."
-category: java
-tags:
-  - java-21
-  - maven
+description: >
+  Extends agent's knowledge of Maven profiles for environment-specific
+  configuration (dev, staging, prod). Use when setting up builds that
+  behave differently across environments.
+compatibility: Java 21+
+metadata:
+  domain: maven
+  level: intermediate
+  stack: [java-21, maven-3.9]
+  version: "1.0.0"
 ---
 
-# Maven Profiles for Environments
+# Profiles and Environments
 
-**Skill ID:** `profiles-environments`  
-**Domain:** `maven`  
-**Level:** intermediate  
-**Version:** 1.0.0  
-**Last Updated:** 2026-06-01
+Maven profiles let you activate different dependencies, plugins, and
+properties based on OS, JDK, or a `-P` flag. They replace environment-
+specific `pom.xml` files.
 
-**Stack:** `java-21, maven`  
-**POS Guidance:** dev, test (H2), prod profiles.
+## Concepts
 
----
+- **Activation** — by OS, JDK, property, file existence, or activeByDefault.
+- **Properties per profile** — `<properties>` inside `<profile>` override
+  global defaults.
+- **Profile-specific dependencies** — add a test DB driver only in dev.
+- **Resource filtering** — replace `${placeholder}` in `application.properties`.
 
-## Purpose
+## Rules
 
-Use when managing different build configurations for dev/test/prod.
+1. Define a `dev` profile (active by default) with debug deps/tools.
+2. Define a `prod` profile with optimizations (minify, strip debug info).
+3. Use `-Pprod` in CI to activate production profile.
+4. Never put secrets in profiles — use environment variables +
+   resource filtering instead.
+5. Use `<activation><activeByDefault>true</activeByDefault></activation>`
+   for exactly one profile.
+6. Prefer `<property>` activation (`-Denv=prod`) for flexibility.
+7. Resource filtering: enable `<filtering>true</filtering>` in
+   `<resource>` and use `${property}` placeholders.
 
----
+## Anti-patterns
 
-## Concepts Covered
+See [anti-patterns.md](./anti-patterns.md).
 
-- **Maven profiles**
-- **Profile activation**
-- **Resource filtering**
+## Related
 
----
-
-## Rules / Best Practices
-
-1. dev: DDL gen on, debug logging
-2. prod: DDL off, warn logging
-
----
-
-## Checklists
-
-### Implementation
-- [ ] Follow all rules above
-- [ ] Java 21 features used where applicable
-- [ ] POS domain guidance followed
-
-### Code Review
-- [ ] No layer boundary violations
-- [ ] Constructor injection used
-
----
-
-## Project-Specific Guidance (Simple POS)
-
-dev, test (H2), prod profiles.
-
----
-
-## Recommended Reading
-- [Java 21 Docs](https://docs.oracle.com/en/java/javase/21/)  
-- [OpenJDK JEPs](https://openjdk.org/projects/jdk/21/)
-
----
-
-## AI/Agent Guide
-
-### Strict Conventions
-- Follow all rules above
-- Java 21 features (records, sealed, virtual threads, pattern matching)
-- Constructor injection only; no static mutable state
-
-### Preferred Libraries
-- See references/canonical-stack.yaml
-
-### Example Prompts
-
-```
-Implement profiles-environments in the Simple POS following the rules above.
-Use Java 21 features where applicable.
-```
-
-### Code Templates
-
-See canonical-stack.yaml for dependencies.
+- multi-module-projects — profiles that apply to specific modules
+- reproducible-builds — pinning profile-dependent versions
+- dependency-management — per-profile dependency sets

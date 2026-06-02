@@ -1,90 +1,49 @@
 ---
 name: ebean-queries
-description: "Use when writing Ebean queries with the type-safe DSL."
-category: java
-tags:
-  - java-21
-  - persistence
+description: >
+  Extends agent's knowledge of building Ebean queries: type-safe expression
+  lists, fetch paths, raw SQL, named queries, and batch operations.
+  Use when writing queries, optimizing N+1 issues, or debugging query results.
+compatibility: Java 21+
+metadata:
+  domain: persistence
+  level: intermediate
+  stack: [java-21, ebean-15]
+  version: "1.0.0"
 ---
 
-# Type-Safe Queries with Ebean
+# Ebean Queries
 
-**Skill ID:** `ebean-queries`  
-**Domain:** `persistence`  
-**Level:** intermediate  
-**Version:** 1.0.0  
-**Last Updated:** 2026-06-01
+Ebean provides a fluent, type-safe API via expression lists, plus raw SQL
+fallbacks, named queries, and batch operations for bulk processing.
 
-**Stack:** `java-21, maven`  
-**POS Guidance:** findByName, findLowStock, findToday queries.
+## Concepts
 
----
+- **`ExpressionList<T>`** — chainable query filters with compile-time field reference
+- **`fetch()` / `fetchLazy()`** — control eager/lazy loading of relationships
+- **`orderBy()`** — sort by entity properties
+- **`setMaxRows()` / `setFirstRow()`** — pagination
+- **`RawSql`** — raw SQL mapped to entities or DTOs
+- **`@NamedQuery`** — pre-defined query for reuse
+- **`SqlQuery`** — raw SQL returning `SqlRow` maps
+- **`findEach()`** — streaming iteration for batch processing
 
-## Purpose
+## Rules
 
-Use when writing Ebean queries with the type-safe DSL.
+1. Use `ExpressionList` for all standard queries — never string-based JPQL.
+2. Control N+1 with explicit `fetch()` and `fetchLazy()` paths.
+3. Use `findEach()` (not `findList()`) for processing > 1000 rows.
+4. Paginate with `setFirstRow()` + `setMaxRows()` — never load entire tables.
+5. Use `RawSql` only for complex aggregations or native SQL features.
+6. Use SLF4J parameterized logging for query debugging — not `toString()`.
+7. Close cursors from `findEach()` implicitly via try-with-resources.
 
----
+## Anti-patterns
 
-## Concepts Covered
+See [anti-patterns.md](./anti-patterns.md).
 
-- **QBean**
-- **ExpressionList**
-- **fetch joins**
-- **pagination**
+## Related
 
----
-
-## Rules / Best Practices
-
-1. Use generated Q-beans
-2. Use fetch() for eager loading
-3. Paginate with setMaxRows()
-
----
-
-## Checklists
-
-### Implementation
-- [ ] Follow all rules above
-- [ ] Java 21 features used where applicable
-- [ ] POS domain guidance followed
-
-### Code Review
-- [ ] No layer boundary violations
-- [ ] Constructor injection used
-
----
-
-## Project-Specific Guidance (Simple POS)
-
-findByName, findLowStock, findToday queries.
-
----
-
-## Recommended Reading
-- [Java 21 Docs](https://docs.oracle.com/en/java/javase/21/)  
-- [OpenJDK JEPs](https://openjdk.org/projects/jdk/21/)
-
----
-
-## AI/Agent Guide
-
-### Strict Conventions
-- Follow all rules above
-- Java 21 features (records, sealed, virtual threads, pattern matching)
-- Constructor injection only; no static mutable state
-
-### Preferred Libraries
-- See references/canonical-stack.yaml
-
-### Example Prompts
-
-```
-Implement ebean-queries in the Simple POS following the rules above.
-Use Java 21 features where applicable.
-```
-
-### Code Templates
-
-See canonical-stack.yaml for dependencies.
+- ebean-setup — configuration
+- ebean-entities — entity mapping
+- sqlite-best-practices — SQLite query optimization

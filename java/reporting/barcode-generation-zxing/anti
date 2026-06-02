@@ -1,0 +1,28 @@
+# Barcode Generation Anti-Patterns
+
+## Generating barcode as image file — slow, unnecessary
+
+```java
+// WRONG — save PNG, load ImageView
+File barcodeFile = File.createTempFile("barcode", ".png");
+ImageIO.write(bitMap, "png", barcodeFile);
+```
+
+**Generate as BufferedImage, convert to JavaFX Image directly. No I/O.**
+
+## Hardcoding barcode size
+
+```java
+// WRONG — fixed size looks bad when resized
+MultiFormatWriter.encode(content, BarcodeFormat.QR_CODE, 200, 200);
+```
+
+**Size based on container dimensions. Regenerate on resize.**
+
+## Missing error correction for QR codes
+
+```java
+// WRONG — no correction level, damaged codes are unreadable
+```
+
+**Always set error correction: EncodeHintType.ERROR_CORRECTION = ErrorCorrectionLevel.M**

@@ -1,87 +1,43 @@
 ---
 name: workspace-layout
-description: "Use when setting up KickStartFX workspace structure."
-category: java
-tags:
-  - java-21
-  - ui-kickstartfx
+description: >
+  Extends agent's knowledge of Maven multi-module JavaFX project structure using
+  ui-kickstartfx conventions. Use when scaffolding a new desktop app, organizing
+  packages, or setting up a maintainable module hierarchy.
+compatibility: Java 21+
+metadata:
+  domain: ui-kickstartfx
+  level: beginner
+  stack: [java-21, javafx-21, maven-3.9]
+  version: "1.0.0"
 ---
 
-# KickStartFX Workspace Layout
+# Workspace Layout
 
-**Skill ID:** `workspace-layout`  
-**Domain:** `ui-kickstartfx`  
-**Level:** intermediate  
-**Version:** 1.0.0  
-**Last Updated:** 2026-06-01
+A well-structured Maven multi-module project prevents circular dependencies,
+enables independent module testing, and keeps JavaFX concerns isolated.
 
-**Stack:** `java-21, maven`  
-**POS Guidance:** Simple POS uses single workspace with sidebar navigation.
+## Concepts
 
----
+- **Root POM**: defines `<dependencyManagement>` and `<modules>`, no source code
+- **app module**: `Application` class, `module-info.java`, assembles all modules
+- **core module**: domain logic, services, entities — zero JavaFX imports
+- **ui module**: FXML files, controllers, CSS — depends on core, never the reverse
+- **resources module** (optional): shared CSS, fonts, images across UI modules
 
-## Purpose
+## Rules
 
-Use when setting up KickStartFX workspace structure.
+1. Root `pom.xml` only has `<modules>` and dependencyManagement — never put source there.
+2. `core` module must not import any `javafx.*` package — keep it toolkit-agnostic.
+3. Define `module-info.java` in every module with explicit `requires` clauses.
+4. One package per concern: `com.pos.core.product`, not `com.pos.core.utils` catch-alls.
+5. Keep FXML files adjacent to their controller in `src/main/resources`.
 
----
+## Anti-patterns
 
-## Concepts Covered
+See [anti-patterns.md](./anti-patterns.md).
 
-- **Workspace**
-- **Window configuration**
+## Related
 
----
-
-## Rules / Best Practices
-
-1. Extend KickStartFX Application class
-2. Configure workspace in start method
-
----
-
-## Checklists
-
-### Implementation
-- [ ] Follow all rules above
-- [ ] Java 21 features used where applicable
-- [ ] POS domain guidance followed
-
-### Code Review
-- [ ] No layer boundary violations
-- [ ] Constructor injection used
-
----
-
-## Project-Specific Guidance (Simple POS)
-
-Simple POS uses single workspace with sidebar navigation.
-
----
-
-## Recommended Reading
-- [Java 21 Docs](https://docs.oracle.com/en/java/javase/21/)  
-- [OpenJDK JEPs](https://openjdk.org/projects/jdk/21/)
-
----
-
-## AI/Agent Guide
-
-### Strict Conventions
-- Follow all rules above
-- Java 21 features (records, sealed, virtual threads, pattern matching)
-- Constructor injection only; no static mutable state
-
-### Preferred Libraries
-- See references/canonical-stack.yaml
-
-### Example Prompts
-
-```
-Implement workspace-layout in the Simple POS following the rules above.
-Use Java 21 features where applicable.
-```
-
-### Code Templates
-
-See canonical-stack.yaml for dependencies.
+- navigation-patterns — structuring flows between views
+- sidebar-shell-architecture — main window shell conventions

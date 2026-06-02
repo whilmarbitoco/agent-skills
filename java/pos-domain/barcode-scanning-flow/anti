@@ -1,0 +1,28 @@
+# Barcode Scanning Anti-Patterns
+
+## Camera-only scanning — fails in low light
+
+```java
+// WRONG — camera only, no fallback
+BarcodeScanner camera = new CameraScanner();
+```
+
+**First: support keyboard wedge USB scanner. Camera is fallback.**
+
+## No debounce on rapid scans
+
+```java
+// WRONG — same barcode processed 10 times in 1 second
+scanner.onScan(code -> processScan(code));
+```
+
+**Fix: debounce — ignore scans within 300ms of previous.**
+
+## Hardcoding ZXing dependency — vendor lock-in
+
+```java
+// WRONG — ZXing API used directly everywhere
+Hints hints = new Hints();
+```
+
+**Fix: wrap scanner behind interface. Swap implementations easily.

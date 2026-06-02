@@ -1,0 +1,16 @@
+# JasperReports Quick Reference
+
+| Component | Purpose |
+|-----------|---------|
+| .jrxml | Template source (XML) |
+| .jasper | Compiled binary (ship this) |
+| .jrprint | Filled report (in-memory) |
+| JRBeanCollectionDataSource | Java object data source |
+| JasperFillManager | Fill template with data |
+| JasperExportManager | Export to PDF/CSV/XLSX |
+
+| Export | Method |
+|--------|--------|
+| PDF | exportReportToPdf() |
+| CSV | exportReportToCsv() |
+| XLSX | exportReportToXlsx() |

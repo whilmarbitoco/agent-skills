@@ -1,0 +1,12 @@
+# Checklist
+
+## Implementation
+- [ ] USB keyboard wedge scanner supported
+- [ ] Camera fallback available
+- [ ] Debounce timer (300ms) between scans
+- [ ] Scanner interface abstracted
+
+## Code Review
+- [ ] Scanner works without camera permission
+- [ ] Rapid scan test passes (no duplicates)
+- [ ] Scanner swapable via DI

@@ -1,89 +1,37 @@
 ---
 name: layered-architecture
-description: "Use when structuring a JavaFX desktop app with clear separation of concerns."
-category: java
-tags:
-  - java-21
-  - architecture
+description: >
+  Extends agent's knowledge of classic layered (n-tier) Java architecture.
+  Use when structuring server-side or desktop apps with clear separation:
+  presentation → service → repository → database.
+compatibility: Java 21+
+metadata:
+  domain: architecture
+  level: beginner
+  stack: [java-21, slf4j, ebean]
+  version: "1.0.0"
 ---
 
-# Layered Architecture for Desktop Apps
+# Layered Architecture
 
-**Skill ID:** `layered-architecture`  
-**Domain:** `architecture`  
-**Level:** intermediate  
-**Version:** 1.0.0  
-**Last Updated:** 2026-06-01
+Separate concerns into strict top-down layers. Each layer depends only on the one below.
 
-**Stack:** `java-21, maven`  
-**POS Guidance:** Simple POS: domain -> persistence -> services -> ui.
+## Layers (top → bottom)
 
----
+1. **Presentation** — HTTP handlers, JavaFX controllers, CLI parsers. No business logic.
+2. **Service** — Business rules, transactions, validations. Orchestrates repos.
+3. **Repository** — Data access (Ebean queries, SQLite). Returns domain objects.
+4. **Domain / Model** — Entities, value objects (records), enums.
 
-## Purpose
+## Rules
 
-Use when structuring a JavaFX desktop app with clear separation of concerns.
+- Presentation never touches Repository directly — goes through Service.
+- Services are transactional boundaries; repos are not.
+- Domain objects carry NO framework annotations (keep Ebean annotations in entity classes).
+- Constructor injection throughout; no field injection.
+- Cross-cutting concerns via utility classes, not aspect magic.
 
----
+## See also
 
-## Concepts Covered
-
-- **Layer boundaries**
-- **Dependency direction**
-- **Package structure**
-
----
-
-## Rules / Best Practices
-
-1. Domain has zero dependencies on other layers
-2. UI depends on service interfaces only
-3. No cyclic dependencies
-
----
-
-## Checklists
-
-### Implementation
-- [ ] Follow all rules above
-- [ ] Java 21 features used where applicable
-- [ ] POS domain guidance followed
-
-### Code Review
-- [ ] No layer boundary violations
-- [ ] Constructor injection used
-
----
-
-## Project-Specific Guidance (Simple POS)
-
-Simple POS: domain -> persistence -> services -> ui.
-
----
-
-## Recommended Reading
-- [Java 21 Docs](https://docs.oracle.com/en/java/javase/21/)  
-- [OpenJDK JEPs](https://openjdk.org/projects/jdk/21/)
-
----
-
-## AI/Agent Guide
-
-### Strict Conventions
-- Follow all rules above
-- Java 21 features (records, sealed, virtual threads, pattern matching)
-- Constructor injection only; no static mutable state
-
-### Preferred Libraries
-- See references/canonical-stack.yaml
-
-### Example Prompts
-
-```
-Implement layered-architecture in the Simple POS following the rules above.
-Use Java 21 features where applicable.
-```
-
-### Code Templates
-
-See canonical-stack.yaml for dependencies.
+- feature-based-packaging — alternative packaging strategy
+- service-repository-pattern — deeper dive into service/repo layer

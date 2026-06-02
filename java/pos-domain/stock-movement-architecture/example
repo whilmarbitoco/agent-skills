@@ -1,0 +1,31 @@
+package com.simplepos.stock;
+
+/**
+ * Sealed hierarchy for stock movement types.
+ * Every stock change creates a StockMovement record.
+ */
+public sealed interface StockMovementType
+    permits StockMovementType.Purchase, StockMovementType.Sale,
+            StockMovementType.Adjustment, StockMovementType.Return,
+            StockMovementType.Loss {
+
+    record Purchase(long poId, Money unitCost) implements StockMovementType {}
+    record Sale(long saleId) implements StockMovementType {}
+    record Adjustment(String reason, int delta) implements StockMovementType {}
+    record Return(long originalSaleId, String reason) implements StockMovementType {}
+    record Loss(String reason, Money estimatedValue) implements StockMovementType {}
+}
+
+@Entity
+@Table(name = "stock_movements")
+public class StockMovement {
+    @Id @GeneratedValue private Long id;
+    @ManyToOne private Product product;
+    @Enumerated(EnumType.STRING) private MovementType type;
+    private int quantity;
+    private String reason;
+    private Long referenceId; // saleId, poId, etc.
+    private Instant timestamp;
+    private Long userId;
+    private int balanceAfter; // running balance
+}

@@ -1,0 +1,14 @@
+# Scanning Quick Reference
+
+| Format | Use Case |
+|--------|---------|
+| QR_CODE | Product lookup, payment links |
+| CODE_128 | Internal SKU identifiers |
+| EAN_13 | Standard retail barcodes |
+| UPC_A | North American retail |
+
+| Source | Latency | Setup |
+|--------|---------|-------|
+| USB Keyboard Wedge | Instant | Plug & play |
+| Camera | 300-800ms | Permission needed |
+| Serial Port | Instant | Config needed |

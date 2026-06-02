@@ -1,0 +1,14 @@
+# Barcode Quick Reference
+
+| Format | Use Case | Size |
+|--------|---------|------|
+| QR_CODE | Receipt lookup, payment | 200x200px |
+| CODE_128 | Internal SKU | 300x80px |
+| EAN-13 | Retail products | 150x60px |
+
+| Error Correction | Recovery |
+|-----------------|----------|
+| L (7%) | Low |
+| M (15%) | Medium — recommended |
+| Q (25%) | High |
+| H (30%) | Highest |

@@ -1,90 +1,48 @@
 ---
 name: ebean-entities
-description: "Use when creating Ebean entities and defining relationships."
-category: java
-tags:
-  - java-21
-  - persistence
+description: >
+  Extends agent's knowledge of mapping Ebean entities: JPA annotations,
+  naming conventions, relationships, soft-delete, auditing, and enum mapping.
+  Use when designing entity classes or fixing relationship mapping errors.
+compatibility: Java 21+
+metadata:
+  domain: persistence
+  level: intermediate
+  stack: [java-21, ebean-15]
+  version: "1.0.0"
 ---
 
-# Entity Modeling with Ebean
+# Ebean Entities
 
-**Skill ID:** `ebean-entities`  
-**Domain:** `persistence`  
-**Level:** intermediate  
-**Version:** 1.0.0  
-**Last Updated:** 2026-06-01
+Ebean entities are POJOs annotated with `jakarta.persistence.*` and optionally
+`io.ebean.annotation.*`. They support lazy loading, dirty checking, and
+automatic auditing.
 
-**Stack:** `java-21, maven`  
-**POS Guidance:** Product, Sale, SaleLine, StockMovement entities.
+## Concepts
 
----
+- **`@Entity` + `@Table`** — mark a class as a persistent entity
+- **`@Id` + `@GeneratedValue`** — identity column (auto-increment in SQLite)
+- **`@ManyToOne` / `@OneToMany`** — relationships with lazy loading by default
+- **`@WhenCreated` / `@WhenModified`** — automatic timestamp auditing
+- **`@SoftDelete`** — sets a flag instead of deleting the row
+- **`@DbEnumType`** — stores enums as strings or integers
+- **`@Index`** — adds database indexes via DDL generation
 
-## Purpose
+## Rules
 
-Use when creating Ebean entities and defining relationships.
+1. Keep entities as plain classes (not records) — Ebean needs setters/field access.
+2. Use `@Version` for optimistic locking on concurrent-write entities.
+3. Always define `equals()`/`hashCode()` based on the business key or `@Id`.
+4. Use `@SoftDelete` instead of physical deletes when data retention matters.
+5. Annotate `@ManyToOne` with `@JoinColumn(name = "foreign_key_col")`.
+6. Use `@DbEnumType(ENUM)` for string-stored enums — more readable than ordinals.
+7. Keep `FetchType.LAZY` as default; use `EAGER` only when always needed.
 
----
+## Anti-patterns
 
-## Concepts Covered
+See [anti-patterns.md](./anti-patterns.md).
 
-- **Entity annotations**
-- **Relationships**
-- **Version optimistic locking**
-- **Index**
+## Related
 
----
-
-## Rules / Best Practices
-
-1. Always include Version for optimistic locking
-2. Add WhenCreated/WhenModified
-3. Index frequently queried columns
-
----
-
-## Checklists
-
-### Implementation
-- [ ] Follow all rules above
-- [ ] Java 21 features used where applicable
-- [ ] POS domain guidance followed
-
-### Code Review
-- [ ] No layer boundary violations
-- [ ] Constructor injection used
-
----
-
-## Project-Specific Guidance (Simple POS)
-
-Product, Sale, SaleLine, StockMovement entities.
-
----
-
-## Recommended Reading
-- [Java 21 Docs](https://docs.oracle.com/en/java/javase/21/)  
-- [OpenJDK JEPs](https://openjdk.org/projects/jdk/21/)
-
----
-
-## AI/Agent Guide
-
-### Strict Conventions
-- Follow all rules above
-- Java 21 features (records, sealed, virtual threads, pattern matching)
-- Constructor injection only; no static mutable state
-
-### Preferred Libraries
-- See references/canonical-stack.yaml
-
-### Example Prompts
-
-```
-Implement ebean-entities in the Simple POS following the rules above.
-Use Java 21 features where applicable.
-```
-
-### Code Templates
-
-See canonical-stack.yaml for dependencies.
+- ebean-setup — configuration and server setup
+- ebean-queries — type-safe query building

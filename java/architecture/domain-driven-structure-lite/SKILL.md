@@ -1,89 +1,54 @@
 ---
 name: domain-driven-structure-lite
-description: "Use when applying DDD concepts to JavaFX desktop apps."
-category: java
-tags:
-  - java-21
-  - architecture
+description: >
+  Extends agent's knowledge of lightweight DDD structure for Java 21 apps.
+  Use when the domain logic is complex enough to warrant aggregates, value
+  objects, and domain events, but a full DDD tactical pattern set is overkill.
+compatibility: Java 21+
+metadata:
+  domain: architecture
+  level: advanced
+  stack: [java-21, ebean-15, slf4j]
+  version: "1.0.0"
 ---
 
 # Domain-Driven Structure (Lite)
 
-**Skill ID:** `domain-driven-structure-lite`  
-**Domain:** `architecture`  
-**Level:** advanced  
-**Version:** 1.0.0  
-**Last Updated:** 2026-06-01
+A pragmatic subset of DDD tactical patterns. Enough structure to model complex domains without ceremony.
 
-**Stack:** `java-21, maven`  
-**POS Guidance:** Sale and Product are aggregate roots.
+## Building Blocks
 
----
+| Block | Java construct | Purpose |
+|-------|---------------|---------|
+| Value Object | `record` | Immutable, compared by fields |
+| Entity | Class with `id` | Mutable identity, lifecycle |
+| Aggregate Root | Entity + invariants | Consistency boundary |
+| Domain Event | `record` | Something happened in the domain |
+| Domain Service | Class | Logic that doesn't belong to one entity |
 
-## Purpose
+## Rules
 
-Use when applying DDD concepts to JavaFX desktop apps.
+- Value objects are `record` — auto `equals`/`hashCode`, immutable.
+- Aggregates enforce invariants in methods, not setters.
+- Domain events are raised inside aggregate methods, collected by the service layer.
+- Repositories persist whole aggregates — no partial saves.
+- Domain services are stateless; they receive aggregates via constructor or method args.
+- No anemic domain model — entities have behavior, not just getters/setters.
 
----
-
-## Concepts Covered
-
-- **Entities**
-- **Value objects**
-- **Aggregates**
-- **Domain events**
-
----
-
-## Rules / Best Practices
-
-1. Value objects are records
-2. Repositories only for aggregates
-
----
-
-## Checklists
-
-### Implementation
-- [ ] Follow all rules above
-- [ ] Java 21 features used where applicable
-- [ ] POS domain guidance followed
-
-### Code Review
-- [ ] No layer boundary violations
-- [ ] Constructor injection used
-
----
-
-## Project-Specific Guidance (Simple POS)
-
-Sale and Product are aggregate roots.
-
----
-
-## Recommended Reading
-- [Java 21 Docs](https://docs.oracle.com/en/java/javase/21/)  
-- [OpenJDK JEPs](https://openjdk.org/projects/jdk/21/)
-
----
-
-## AI/Agent Guide
-
-### Strict Conventions
-- Follow all rules above
-- Java 21 features (records, sealed, virtual threads, pattern matching)
-- Constructor injection only; no static mutable state
-
-### Preferred Libraries
-- See references/canonical-stack.yaml
-
-### Example Prompts
+## Package layout
 
 ```
-Implement domain-driven-structure-lite in the Simple POS following the rules above.
-Use Java 21 features where applicable.
+domain/
+├── order/
+│   ├── Order.java              aggregate root
+│   ├── OrderLine.java          entity
+│   ├── Money.java              value object (record)
+│   ├── OrderPlaced.java        domain event (record)
+│   ├── OrderRepository.java    interface
+│   └── PricingService.java     domain service
 ```
 
-### Code Templates
+## See also
 
-See canonical-stack.yaml for dependencies.
+- feature-based-packaging — aligns naturally with DDD boundaries
+- service-repository-pattern — application service layer sits above domain

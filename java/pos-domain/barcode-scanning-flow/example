@@ -1,0 +1,55 @@
+package com.simplepos.barcode;
+
+import com.google.zxing.*;
+import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
+import java.awt.image.BufferedImage;
+import java.util.*;
+
+/**
+ * Barcode scanning with ZXing.
+ * Supports USB keyboard wedge (primary) and camera (fallback).
+ */
+public class BarcodeScanner {
+
+    private final Map<DecodeHintType, Object> hints = Map.of(
+        DecodeHintType.POSSIBLE_FORMATS, List.of(
+            BarcodeFormat.QR_CODE,
+            BarcodeFormat.CODE_128,
+            BarcodeFormat.EAN_13,
+            BarcodeFormat.UPC_A
+        )
+    );
+
+    public Optional<String> scanFromImage(BufferedImage image) {
+        LuminanceSource source = new BufferedImageLuminanceSource(image);
+        BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+        try {
+            Result result = new MultiFormatReader().decode(bitmap, hints);
+            return Optional.of(result.getText());
+        } catch (NotFoundException e) {
+            return Optional.empty();
+        }
+    }
+}
+
+// USB keyboard wedge — scanner sends keystrokes
+// Just listen on the input field, buffer characters on Enter
+public class KeyboardWiperScanner {
+
+    private final StringBuilder buffer = new StringBuilder();
+    private final Consumer<String> onScan;
+
+    public KeyboardWiperScanner(Consumer<String> onScan) {
+        this.onScan = onScan;
+    }
+
+    public void onKeyTyped(String character) {
+        if (character.equals("\n") || character.equals("\r")) {
+            String code = buffer.toString().trim();
+            if (!code.isEmpty()) onScan.accept(code);
+            buffer.setLength(0);
+        } else if (buffer.length() < 50) {
+            buffer.append(character);
+        }
+    }
+}

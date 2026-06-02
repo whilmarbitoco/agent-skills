@@ -1,0 +1,28 @@
+# JasperReports Anti-Patterns
+
+## Hardcoding SQL in JRXML — bypasses Ebean
+
+```xml
+<!-- WRONG -->
+<queryString>SELECT * FROM product</queryString>
+```
+
+**Use JRBeanCollectionDataSource with Java objects. Let Ebean handle queries.**
+
+## Loading .jrxml from classpath at runtime — slow
+
+```java
+// WRONG — compiles JRXML every time
+JasperCompileManager.compileReport(inputStream);
+```
+
+**Compile at build time, ship .jasper binary.**
+
+## No parameter validation — NPE in report
+
+```java
+// WRONG — parameter might be null
+$P{startDate}.toString();
+```
+
+**Always check: `$P{startDate} != null ? $P{startDate} : "N/A"`**

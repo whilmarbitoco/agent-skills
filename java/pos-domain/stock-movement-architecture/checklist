@@ -1,0 +1,13 @@
+# Checklist
+
+## Implementation
+- [ ] 5 movement types: Purchase, Sale, Adjustment, Return, Loss
+- [ ] StockMovement entity: productId, type, qty, reason, timestamp, userId
+- [ ] Every movement updates stock balance
+- [ ] Low-stock threshold triggers alert
+- [ ] Transaction wrapper around stock updates
+
+## Code Review
+- [ ] No direct stock.setStock() — always through movement
+- [ ] Every adjustment has a non-empty reason
+- [ ] Balance reconstructable from movement history

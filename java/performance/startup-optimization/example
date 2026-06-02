@@ -1,0 +1,38 @@
+# Startup Optimization
+
+## Splash Screen Pattern
+
+```java
+public class MainApp extends Application {
+    @Override
+    public void start(Stage stage) {
+        // Show splash immediately
+        SplashScreen splash = new SplashScreen();
+        splash.show();
+
+        // Initialize DB in background
+        Thread.startVirtualThread(() -> {
+            DatabaseInitializer db = new DatabaseInitializer();
+            Platform.runLater(() -> {
+                InventoryService service = new InventoryService(
+                    new EbeanProductRepository(db.getDatabase())
+                );
+                MainView view = new MainView(service);
+                stage.setScene(new Scene(view.getRoot(), 900, 600));
+                splash.hide();
+                stage.show();
+            });
+        });
+    }
+}
+```
+
+## CDS Archive
+
+```bash
+# Build archive
+java -Xshare:dump -XX:SharedArchiveFile=app.jsa -cp target/app.jar
+
+# Use archive
+java -Xshare:on -XX:SharedArchiveFile=app.jsa -jar target/app.jar
+```

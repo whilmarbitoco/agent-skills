@@ -1,0 +1,36 @@
+# Database Migration Anti-Patterns
+
+## DROP TABLE IF EXISTS — data loss
+
+```sql
+-- WRONG — all user data gone
+DROP TABLE IF EXISTS product;
+CREATE TABLE product (...);
+```
+
+**Fix: ALTER TABLE ADD COLUMN. Preserve existing data.**
+
+## No version tracking — can't determine current schema
+
+```java
+// WRONG — no way to know what version DB is on
+```
+
+**Fix: schema_version table. Ebean checks it before running migrations.**
+
+## Adding NOT NULL column without default
+
+```sql
+-- WRONG — fails on existing rows
+ALTER TABLE product ADD COLUMN barcode VARCHAR(50) NOT NULL;
+```
+
+**Fix: Add as nullable, backfill data, then set NOT NULL.**
+
+## Testing migration on production database
+
+```java
+// WRONG — migrations run on real user data without backup
+```
+
+**Fix: Always backup first. Test on a copy in a transaction you can rollback.

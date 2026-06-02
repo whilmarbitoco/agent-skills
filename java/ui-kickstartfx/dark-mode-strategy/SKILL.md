@@ -1,88 +1,43 @@
 ---
 name: dark-mode-strategy
-description: "Use when implementing dark mode in KickStartFX."
-category: java
-tags:
-  - java-21
-  - ui-kickstartfx
+description: >
+  Extends agent's knowledge of runtime dark/light mode toggling in JavaFX apps.
+  Use when implementing a theme switcher, persisting user appearance preference,
+  or structuring CSS to support dual palettes without duplication.
+compatibility: Java 21+
+metadata:
+  domain: ui-kickstartfx
+  level: intermediate
+  stack: [java-21, javafx-21]
+  version: "1.0.0"
 ---
 
 # Dark Mode Strategy
 
-**Skill ID:** `dark-mode-strategy`  
-**Domain:** `ui-kickstartfx`  
-**Level:** intermediate  
-**Version:** 1.0.0  
-**Last Updated:** 2026-06-01
+Support runtime switching between light and dark palettes by layering CSS
+files: a base `brand.css` (typography, spacing, radii) and a palette file
+(`light.css` or `dark.css`) that only redefines looked-up colors.
 
-**Stack:** `java-21, maven`  
-**POS Guidance:** User preference saved to config. Toggle in settings.
+## Concepts
 
----
+- **Layered stylesheets**: `brand.css` (always loaded) + `palette.css` (swapped at runtime)
+- **CSS file generation**: generate `palette-dark.css` from a template or store both in resources
+- **Preference persistence**: save choice in `Preferences.userNodeForPackage(App.class)` or a JSON file
+- **Initial load**: read persisted preference before `Stage.show()` to avoid a flash of wrong palette
 
-## Purpose
+## Rules
 
-Use when implementing dark mode in KickStartFX.
+1. Separate palette CSS from structural CSS — never mix color tokens with layout rules.
+2. Swap palettes by replacing the stylesheet list on the `Scene`, not individual nodes.
+3. Persist theme choice in `Preferences` under key `ui.theme` with values `"light"` or `"dark"`.
+4. Load persisted palette in `Application.init()`, before the stage is shown.
+5. Use `looks-up color` tokens everywhere — switching files changes all tokens in one pass.
 
----
+## Anti-patterns
 
-## Concepts Covered
+See [anti-patterns.md](./anti-patterns.md).
 
-- **CSS theme switching**
-- **Dark mode toggle**
-- **System preference detection**
+## Related
 
----
-
-## Rules / Best Practices
-
-1. Two CSS files: light + dark
-2. Toggle via root style class
-
----
-
-## Checklists
-
-### Implementation
-- [ ] Follow all rules above
-- [ ] Java 21 features used where applicable
-- [ ] POS domain guidance followed
-
-### Code Review
-- [ ] No layer boundary violations
-- [ ] Constructor injection used
-
----
-
-## Project-Specific Guidance (Simple POS)
-
-User preference saved to config. Toggle in settings.
-
----
-
-## Recommended Reading
-- [Java 21 Docs](https://docs.oracle.com/en/java/javase/21/)  
-- [OpenJDK JEPs](https://openjdk.org/projects/jdk/21/)
-
----
-
-## AI/Agent Guide
-
-### Strict Conventions
-- Follow all rules above
-- Java 21 features (records, sealed, virtual threads, pattern matching)
-- Constructor injection only; no static mutable state
-
-### Preferred Libraries
-- See references/canonical-stack.yaml
-
-### Example Prompts
-
-```
-Implement dark-mode-strategy in the Simple POS following the rules above.
-Use Java 21 features where applicable.
-```
-
-### Code Templates
-
-See canonical-stack.yaml for dependencies.
+- theme-customization — base theming conventions
+- responsive-desktop-layouts — shell structure affects how palette is set

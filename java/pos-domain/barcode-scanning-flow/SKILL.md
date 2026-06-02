@@ -1,89 +1,66 @@
----
-name: barcode-scanning-flow
-description: "Use when implementing barcode scanning integration."
-category: java
-tags:
-  - java-21
-  - pos-domain
----
-
 # Barcode Scanning Flow
 
-**Skill ID:** `barcode-scanning-flow`  
-**Domain:** `pos-domain`  
-**Level:** intermediate  
-**Version:** 1.0.0  
-**Last Updated:** 2026-06-01
-
-**Stack:** `java-21, maven`  
-**POS Guidance:** USB scanner in keyboard wedge mode.
-
----
+## Skill Metadata
+```yaml
+name: barcode-scanning-flow
+domain: pos-domain
+language: java
+version: "1.0.0"
+description: >
+  Integrate barcode scanning in POS usingZXing for decode, USB keyboard wedge
+  scanner input, and camera-based fallback scanning.
+topics:
+  - ZXing barcode decoding
+  - USB keyboard wedge scanner integration
+  - camera fallback scanning
+  - scan result handling pipeline
+constraints:
+  - Use Java 21 records for scan results and commands
+  - Constructor injection for all services
+  - Graceful degradation: USB scanner → camera → manual entry
+  - Thread-safe scanner input buffering
+```
 
 ## Purpose
 
-Use when implementing barcode scanning integration.
+Handle barcode input from multiple sources in a POSterminal: USB barcode
+scanners (keyboard wedge mode), built-in cameras, and manual entry fallback.
+Uses ZXing for image-based decoding and raw input buffering for keyboard
+wedge devices.
 
----
+## Core Concepts
 
-## Concepts Covered
+### USB Keyboard Wedge Scanner
+- Most USB barcode scanners emulate a keyboard — they "type" the barcode data
+- Detection strategy: buffer keystrokes; if a complete barcode arrives within
+  a short time window (e.g., 50ms between chars, terminated by Enter), it's a scan
+- Use `java.awt.KeyEvent` listening or raw HID input via `jnativehook`
 
-- **ZXing**
-- **Camera capture**
-- **External scanner**
-- **Keyboard wedge**
+### ZXing Integration
+- `ZXing` (`com.google.zxing`) decodes barcodes from `BufferedImage`
+- Supports: EAN-13, EAN-8, UPC-A, UPC-E, Code 128, Code 39, QR Code, Data Matrix
+- `MultiFormatReader` attempts all supported formats
+- Wrapped in a `BarcodeDecoder` service with constructor injection
 
----
+### Camera Fallback
+- When USB scanner is unavailable, use webcam via `OpenCV` or `WebcamCapture`
+- Continuous capture → frame → ZXing decode → emit scan result
+- Configurable capture resolution and frame rate
+- Auto-focus and continuous focus mode preferred
 
-## Rules / Best Practices
+### Architecture
+- `BarcodeScanner` interface with `start()`, `stop()`, `onScan(Consumer<ScanResult>)`
+- `KeyboardWedgeScanner` — USB scanner implementation
+- `CameraScanner` — camera fallback implementation
+- `CompositeScanner` — tries USB first, falls back to camera
+- `ScanResult` record: barcode data, format, source, timestamp
 
-1. Support camera and USB scanner
-2. Debounce rapid scan events
+## When to Use This Skill
+- POS product lookup by barcode at checkout
+- Inventory receiving/scanning
+- Price verification stations
+- Returns processing (scan receipt barcode)
 
----
-
-## Checklists
-
-### Implementation
-- [ ] Follow all rules above
-- [ ] Java 21 features used where applicable
-- [ ] POS domain guidance followed
-
-### Code Review
-- [ ] No layer boundary violations
-- [ ] Constructor injection used
-
----
-
-## Project-Specific Guidance (Simple POS)
-
-USB scanner in keyboard wedge mode.
-
----
-
-## Recommended Reading
-- [Java 21 Docs](https://docs.oracle.com/en/java/javase/21/)  
-- [OpenJDK JEPs](https://openjdk.org/projects/jdk/21/)
-
----
-
-## AI/Agent Guide
-
-### Strict Conventions
-- Follow all rules above
-- Java 21 features (records, sealed, virtual threads, pattern matching)
-- Constructor injection only; no static mutable state
-
-### Preferred Libraries
-- See references/canonical-stack.yaml
-
-### Example Prompts
-
-```
-Implement barcode-scanning-flow in the Simple POS following the rules above.
-Use Java 21 features where applicable.
-```
-
-### Code Templates
-
-See canonical-stack.yaml for dependencies.
+## Related Skills
+- `stock-movement-architecture` — scanned items feed stock movements
+- `receipt-generation` — receipt barcodes for returns/verification

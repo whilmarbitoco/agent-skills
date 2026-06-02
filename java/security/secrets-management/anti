@@ -1,0 +1,28 @@
+# Secrets Management Anti-Patterns
+
+## Committing .env file to git
+
+```bash
+# WRONG — secrets in version control
+$ git add .env
+```
+
+**Add `.env` to `.gitignore`. Use `.env.example` with dummy values.**
+
+## Using environment variables for production secrets
+
+```java
+// WRONG — env vars visible in process list
+String password = System.getenv("DB_PASSWORD");
+```
+
+**Use OS keyring (keytar) or encrypted config file. Env vars are for dev only.**
+
+## Logging sensitive data
+
+```java
+// WRONG — password in log file
+log.info("Connecting with password: {}", password);
+```
+
+**Never log secrets. Mask: `log.info("Connecting to db: {}", mask(url))`.**

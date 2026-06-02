@@ -1,0 +1,13 @@
+# Checklist
+
+## Implementation
+- [ ] JRXML templates in src/main/resources/reports/
+- [ ] Compiled to .jasper at build time
+- [ ] JRBeanCollectionDataSource (not SQL)
+- [ ] Parameters validated for null
+- [ ] PDF export tested
+
+## Code Review
+- [ ] No SQL in JRXML
+- [ ] No hardcoded values in templates
+- [ ] Sub-reports tested independently

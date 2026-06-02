@@ -1,0 +1,33 @@
+# Startup Optimization Anti-Patterns
+
+## Loading all services at startup — slow cold start
+
+```java
+// WRONG — 10 services instantiated before first frame
+public void init() {
+    new ReportService(); // 500ms
+    new ExportService(); // 300ms
+    new SyncService();   // 200ms
+    // ... user waits 3 seconds
+}
+```
+
+**Lazy-init services on first use. Show splash screen while Ebean initializes.**
+
+## No AppCDS — slower startup every launch
+
+```java
+// WRONG — classes re-linked every time
+// Fix: build CDS archive
+// java -Xshare:on -XX:SharedArchiveFile=app.jsa -jar app.jar
+```
+
+**Generate CDS archive once, ship with app. 30-40% faster startup.**
+
+## Large CSS files loaded at startup
+
+```java
+// WRONG — 200KB CSS parsed on every launch
+```
+
+**Compile to binary with Css2Bin at build time. Smaller + faster parsing.

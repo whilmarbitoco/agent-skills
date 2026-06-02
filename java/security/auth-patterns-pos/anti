@@ -1,0 +1,28 @@
+# Authentication Anti-Patterns
+
+## Storing passwords in plain text
+
+```java
+// WRONG — plain text password
+user.setPassword(password);
+```
+
+**Hash with BCrypt: `BCrypt.hashpw(password, BCrypt.gensalt(12))`. Never store plain text.**
+
+## No session expiry — token valid forever
+
+```java
+// WRONG — token never expires
+String token = UUID.randomUUID().toString();
+```
+
+**Set expiry: `Instant.now().plus(Duration.ofHours(8))`. Re-authenticate after expiry.**
+
+## Hardcoded roles — can't add new roles
+
+```java
+// WRONG — if-else role checks
+if (user.getRole().equals("ADMIN")) { ... }
+```
+
+**Use enum + RBAC: `Role.ADMIN.hasPermission(Permission.DELETE_PRODUCT)`**

@@ -1,88 +1,49 @@
 ---
 name: event-driven-ui
-description: "Use when implementing event-based communication between UI and services."
-category: java
-tags:
-  - java-21
-  - architecture
+description: >
+  Extends agent's knowledge of event-driven UI architecture in JavaFX.
+  Use when multiple views or components need to communicate without direct
+  references, using a lightweight event bus for decoupled updates.
+compatibility: Java 21+
+metadata:
+  domain: architecture
+  level: intermediate
+  stack: [java-21, javafx-21, slf4j]
+  version: "1.0.0"
 ---
 
-# Event-Driven UI Architecture
+# Event-Driven UI
 
-**Skill ID:** `event-driven-ui`  
-**Domain:** `architecture`  
-**Level:** intermediate  
-**Version:** 1.0.0  
-**Last Updated:** 2026-06-01
+Decouple UI components with a typed event bus. Publishers fire events; subscribers react — no direct references needed.
 
-**Stack:** `java-21, maven`  
-**POS Guidance:** Cart updated -> total recalculated. Sale completed -> stock updated.
+## Event Bus Design
 
----
+- **Event** — `record` carrying payload data. Immutable.
+- **Bus** — Central registry mapping event type → list of handlers.
+- **Publisher** — Calls `bus.publish(event)`.
+- **Subscriber** — Registers `handler` for a specific event type.
 
-## Purpose
+## Rules
 
-Use when implementing event-based communication between UI and services.
+- Events are `record` — no mutable event objects.
+- Bus dispatches on FX Application Thread for UI subscribers.
+- Weak references for subscribers to prevent memory leaks.
+- One bus per module; avoid a single global god-bus.
+- Events carry data, not commands — "what happened", not "do this".
+- Unregister handlers on view disposal (`onClose`, `dispose()`).
 
----
+## When to use
 
-## Concepts Covered
+- Cross-module communication (e.g., invoice list ↔ payment panel).
+- Decoupling background sync from UI updates.
+- Replacing deep callback chains.
 
-- **Event bus**
-- **Publish-subscribe**
-- **JavaFX events**
+## When NOT to use
 
----
+- Parent-child component communication → use direct binding.
+- Simple CRUD forms → overkill.
 
-## Rules / Best Practices
+## See also
 
-1. Use JavaFX events for UI events
-2. Lightweight event bus for service-to-service
-
----
-
-## Checklists
-
-### Implementation
-- [ ] Follow all rules above
-- [ ] Java 21 features used where applicable
-- [ ] POS domain guidance followed
-
-### Code Review
-- [ ] No layer boundary violations
-- [ ] Constructor injection used
-
----
-
-## Project-Specific Guidance (Simple POS)
-
-Cart updated -> total recalculated. Sale completed -> stock updated.
-
----
-
-## Recommended Reading
-- [Java 21 Docs](https://docs.oracle.com/en/java/javase/21/)  
-- [OpenJDK JEPs](https://openjdk.org/projects/jdk/21/)
-
----
-
-## AI/Agent Guide
-
-### Strict Conventions
-- Follow all rules above
-- Java 21 features (records, sealed, virtual threads, pattern matching)
-- Constructor injection only; no static mutable state
-
-### Preferred Libraries
-- See references/canonical-stack.yaml
-
-### Example Prompts
-
-```
-Implement event-driven-ui in the Simple POS following the rules above.
-Use Java 21 features where applicable.
-```
-
-### Code Templates
-
-See canonical-stack.yaml for dependencies.
+- mvvm-javafx — events complement property bindings
+- offline-first-design — sync events drive UI updates

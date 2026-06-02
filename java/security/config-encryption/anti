@@ -1,0 +1,28 @@
+# Config Encryption Anti-Patterns
+
+## Storing secrets in plain text properties
+
+```properties
+# WRONG — anyone with file access sees the password
+db.password=mysecret123
+```
+
+**Encrypt at rest: AES-256-GCM with key derived from user password + salt.**
+
+## Hardcoding encryption key
+
+```java
+// WRONG — key in source code
+SecretKey key = new SecretKeySpec("mykey12345678901".getBytes(), "AES");
+```
+
+**Derive key from user password via PBKDF2. Never hardcode.**
+
+## Using ECB mode — patterns leak
+
+```java
+// WRONG — ECB reveals patterns in encrypted data
+Cipher.getInstance("AES/ECB/PKCS5Padding");
+```
+
+**Use GCM: `Cipher.getInstance("AES/GCM/NoPadding")`. Authenticated encryption.**

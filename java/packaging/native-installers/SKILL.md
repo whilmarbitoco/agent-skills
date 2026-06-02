@@ -1,88 +1,49 @@
 ---
 name: native-installers
-description: "Use when building platform-specific native installers."
-category: java
-tags:
-  - java-21
-  - packaging
+description: >
+  Extends agent's knowledge of customizing platform-specific native
+  installers (deb/msi/dmg) for Java POS applications. Use when branding,
+  signing, or post-install configuring packaged JavaFX installers.
+compatibility: Java 21+
+metadata:
+  domain: packaging
+  level: advanced
+  stack: [java-21, jpackage, wix, dpkg, maven-3.9]
+  version: "1.0.0"
 ---
 
 # Native Installers
 
-**Skill ID:** `native-installers`  
-**Domain:** `packaging`  
-**Level:** advanced  
-**Version:** 1.0.0  
-**Last Updated:** 2026-06-01
+Beyond basic `jpackage`, each platform has specific customizations:
+license files, desktop shortcuts, file associations, signing, and
+post-install hooks. POS apps need branded installers that configure
+the POS terminal on first launch.
 
-**Stack:** `java-21, maven`  
-**POS Guidance:** deb for Linux, msi for Windows, dmg for macOS.
+## Concepts
 
----
+- **`.wix` / WiX** — Windows MSI custom actions (service install, file
+  associations).
+- **`dpkg-deb` / `debhelper`** — Linux `.deb` maintainer scripts
+  (`postinst`, `prerm`).
+- **`pkgbuild` / `productbuild`** — macOS `.pkg` and `.dmg` creation.
+- **Code signing** — Authenticode (Windows), GPG/notarize (macOS),
+  GPG (Linux) to avoid OS warning dialogs.
 
-## Purpose
+## Rules
 
-Use when building platform-specific native installers.
+1. Bundle a JRE via `jlink` runtime image — never depend on system JRE
+   in native installers.
+2. Include `postinst` on Linux to create symlink in `/usr/local/bin` and
+   register `.desktop` file.
+3. Sign Windows MSIs with Authenticode or users see "Unknown publisher".
+4. Store installer version in the filename: `pos-installer-1.0.0.msi`.
+5. Test install, upgrade, and uninstall on each target OS in CI.
 
----
+## Anti-patterns
 
-## Concepts Covered
+See [anti-patterns.md](./anti-patterns.md).
 
-- **deb**
-- **msi**
-- **dmg**
-- **WiX**
+## Related
 
----
-
-## Rules / Best Practices
-
-1. deb on Linux, msi on Windows (WiX), dmg on macOS
-
----
-
-## Checklists
-
-### Implementation
-- [ ] Follow all rules above
-- [ ] Java 21 features used where applicable
-- [ ] POS domain guidance followed
-
-### Code Review
-- [ ] No layer boundary violations
-- [ ] Constructor injection used
-
----
-
-## Project-Specific Guidance (Simple POS)
-
-deb for Linux, msi for Windows, dmg for macOS.
-
----
-
-## Recommended Reading
-- [Java 21 Docs](https://docs.oracle.com/en/java/javase/21/)  
-- [OpenJDK JEPs](https://openjdk.org/projects/jdk/21/)
-
----
-
-## AI/Agent Guide
-
-### Strict Conventions
-- Follow all rules above
-- Java 21 features (records, sealed, virtual threads, pattern matching)
-- Constructor injection only; no static mutable state
-
-### Preferred Libraries
-- See references/canonical-stack.yaml
-
-### Example Prompts
-
-```
-Implement native-installers in the Simple POS following the rules above.
-Use Java 21 features where applicable.
-```
-
-### Code Templates
-
-See canonical-stack.yaml for dependencies.
+- jpackage-basics — base jpackage configuration
+- shading-and-packaging — uber-jar fallback for non-modular apps

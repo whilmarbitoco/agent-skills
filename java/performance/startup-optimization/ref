@@ -1,0 +1,8 @@
+# Startup Quick Reference
+
+| Technique | Impact | Effort |
+|-----------|--------|--------|
+| Lazy service init | 2-3s faster | Low |
+| AppCDS archive | 30-40% faster | Medium |
+| Binary CSS | 10-20% faster | Low |
+| Splash screen | Perceived speed | Low |

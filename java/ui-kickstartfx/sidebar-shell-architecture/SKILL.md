@@ -1,88 +1,44 @@
 ---
 name: sidebar-shell-architecture
-description: "Use when implementing the main shell with sidebar navigation."
-category: java
-tags:
-  - java-21
-  - ui-kickstartfx
+description: >
+  Extends agent's knowledge of the sidebar shell pattern for desktop JavaFX
+  apps. Use when building the main application frame, implementing collapsible
+  navigation drawers, or structuring a persistent topbar + sidebar layout.
+compatibility: Java 21+
+metadata:
+  domain: ui-kickstartfx
+  level: intermediate
+  stack: [java-21, javafx-21]
+  version: "1.0.0"
 ---
 
 # Sidebar Shell Architecture
 
-**Skill ID:** `sidebar-shell-architecture`  
-**Domain:** `ui-kickstartfx`  
-**Level:** advanced  
-**Version:** 1.0.0  
-**Last Updated:** 2026-06-01
+The shell is the persistent frame: topbar (brand, search, user menu) + sidebar
+(navigation items) + a center content area that swaps views. The shell never
+reloads — only the center `StackPane` content changes.
 
-**Stack:** `java-21, maven`  
-**POS Guidance:** 240px sidebar with icons+labels. Content area views.
+## Concepts
 
----
+- **Shell control**: custom `Region` with its own FXML — `ShellView.fxml`
+- **Sidebar**: `VBox` of icon+label `ToggleButton`s styled as nav items
+- **Content area**: `StackPane` in `BorderPane.CENTER` — navigation service replaces its children
+- **Collapsible mode**: sidebar toggles between icon-only (collapsed) and icon+label (expanded)
+- **Notification badge**: `Label` overlay on sidebar items showing pending counts
 
-## Purpose
+## Rules
 
-Use when implementing the main shell with sidebar navigation.
+1. Shell loads once at startup — navigation changes only the center content pane.
+2. Track active route via an `ObjectProperty<Route>` bound to sidebar `ToggleButton` selection.
+3. Collapse/expand sidebar with a smooth `TranslateX` animation, not by removing nodes.
+4. Topbar remains static — search and user menu are included inside the shell FXML.
+5. Content views must not know they live in a shell — inject navigation service via constructor.
 
----
+## Anti-patterns
 
-## Concepts Covered
+See [anti-patterns.md](./anti-patterns.md).
 
-- **Sidebar layout**
-- **Content area**
-- **Responsive behavior**
+## Related
 
----
-
-## Rules / Best Practices
-
-1. Sidebar fixed width, content fills remaining space
-2. Collapse on small screens
-
----
-
-## Checklists
-
-### Implementation
-- [ ] Follow all rules above
-- [ ] Java 21 features used where applicable
-- [ ] POS domain guidance followed
-
-### Code Review
-- [ ] No layer boundary violations
-- [ ] Constructor injection used
-
----
-
-## Project-Specific Guidance (Simple POS)
-
-240px sidebar with icons+labels. Content area views.
-
----
-
-## Recommended Reading
-- [Java 21 Docs](https://docs.oracle.com/en/java/javase/21/)  
-- [OpenJDK JEPs](https://openjdk.org/projects/jdk/21/)
-
----
-
-## AI/Agent Guide
-
-### Strict Conventions
-- Follow all rules above
-- Java 21 features (records, sealed, virtual threads, pattern matching)
-- Constructor injection only; no static mutable state
-
-### Preferred Libraries
-- See references/canonical-stack.yaml
-
-### Example Prompts
-
-```
-Implement sidebar-shell-architecture in the Simple POS following the rules above.
-Use Java 21 features where applicable.
-```
-
-### Code Templates
-
-See canonical-stack.yaml for dependencies.
+- navigation-patterns — drives center content swaps
+- responsive-desktop-layouts — shell adapts to window size

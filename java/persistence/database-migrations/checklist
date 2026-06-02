@@ -1,0 +1,12 @@
+# Checklist
+
+## Implementation
+- [ ] Migration numbered sequentially (1.sql, 2.sql, ...)
+- [ ] Each migration has -- apply and -- undo comments
+- [ ] Schema version tracked
+- [ ] Tested on backup of real data
+
+## Code Review
+- [ ] No DROP TABLE in migrations
+- [ ] NOT NULL columns have DEFAULT or are added as nullable first
+- [ ] Migrations are idempotent

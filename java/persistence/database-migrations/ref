@@ -1,0 +1,11 @@
+# Ebean Migration Quick Reference
+
+| Concept | Details |
+|---------|---------|
+| Location | src/main/resources/db/migration/ |
+| Naming | 1.sql, 2.sql, 3.sql |
+| Apply comment | -- apply |
+| Undo comment | -- undo |
+| Version table | schema_version |
+| Auto-detect | Ebean scans files on startup |
+| prod: auto-run | Disabled by default — run manually after backup |

@@ -1,89 +1,53 @@
 ---
 name: reproducible-builds
-description: "Use when ensuring Maven builds are reproducible."
-category: java
-tags:
-  - java-21
-  - maven
+description: >
+  Extends agent's knowledge of creating bit-for-bit reproducible Maven
+  builds. Use when building release artifacts that must be verifiable
+  or when enabling deterministic CI/CD pipelines.
+compatibility: Java 21+
+metadata:
+  domain: maven
+  advanced: advanced
+  stack: [java-21, maven-3.9]
+  version: "1.0.0"
 ---
 
 # Reproducible Builds
 
-**Skill ID:** `reproducible-builds`  
-**Domain:** `maven`  
-**Level:** beginner  
-**Version:** 1.0.0  
-**Last Updated:** 2026-06-01
+A reproducible build produces the identical artifact (byte-for-byte)
+given the same source, regardless of when or where it's built. This is
+essential for supply-chain security and CI caching.
 
-**Stack:** `java-21, maven`  
-**POS Guidance:** mvnw in repo. All plugin versions pinned.
+## Concepts
 
----
+- **Timestamps** — jars embed `META-INF/MANIFEST.MF` and file timestamps
+  that differ per build.
+- **`project.build.outputTimestamp`** — Maven property that normalizes
+  all timestamps in the output artifact.
+- **Sorted entries** — reproducible-order file listing in jars/zips.
+- **`.mvn/maven.config`** — reproducible CLI flags across environments.
 
-## Purpose
+## Rules
 
-Use when ensuring Maven builds are reproducible.
+1. Set `<project.build.outputTimestamp>` to the SCM tag timestamp (as
+   seconds since epoch).
+2. Configure `maven-jar-plugin`, `maven-source-plugin`, etc. to inherit
+   this timestamp.
+3. Sort file entries: `<sorted>true</sorted>` in plugin configs where
+   available.
+4. Pin all plugin versions explicitly — never use `LATEST` or `RELEASE`.
+5. Use `--batch-mode` in CI to avoid interactive output affecting logs.
+6. Verify reproducibility with `mvn artifact:compare` or `reproducible-builds.org`
+   `strip-nondeterminism` tool.
+7. Generate a `buildinfo` file capturing exact dependency graph +
+   environment for auditing.
 
----
+## Anti-patterns
 
-## Concepts Covered
+See [anti-patterns.md](./anti-patterns.md).
 
-- **Maven wrapper**
-- **Plugin versions**
-- **Dependency locking**
+## Related
 
----
-
-## Rules / Best Practices
-
-1. Maven Wrapper required
-2. Pin all plugin versions
-3. mvnw in repo
-
----
-
-## Checklists
-
-### Implementation
-- [ ] Follow all rules above
-- [ ] Java 21 features used where applicable
-- [ ] POS domain guidance followed
-
-### Code Review
-- [ ] No layer boundary violations
-- [ ] Constructor injection used
-
----
-
-## Project-Specific Guidance (Simple POS)
-
-mvnw in repo. All plugin versions pinned.
-
----
-
-## Recommended Reading
-- [Java 21 Docs](https://docs.oracle.com/en/java/javase/21/)  
-- [OpenJDK JEPs](https://openjdk.org/projects/jdk/21/)
-
----
-
-## AI/Agent Guide
-
-### Strict Conventions
-- Follow all rules above
-- Java 21 features (records, sealed, virtual threads, pattern matching)
-- Constructor injection only; no static mutable state
-
-### Preferred Libraries
-- See references/canonical-stack.yaml
-
-### Example Prompts
-
-```
-Implement reproducible-builds in the Simple POS following the rules above.
-Use Java 21 features where applicable.
-```
-
-### Code Templates
-
-See canonical-stack.yaml for dependencies.
+- dependency-management — pinned versions
+- shading-and-packaging — deterministic uber-jar output
+- profiles-environments — environment-agnostic builds

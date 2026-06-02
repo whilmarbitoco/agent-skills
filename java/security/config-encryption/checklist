@@ -1,0 +1,12 @@
+# Checklist
+
+## Implementation
+- [ ] AES-256-GCM encryption
+- [ ] Key derived via PBKDF2 (100k iterations)
+- [ ] Random IV per encryption
+- [ ] Encrypted values stored in config file
+
+## Code Review
+- [ ] No plain text secrets in config
+- [ ] No hardcoded keys
+- [ ] GCM mode (not ECB/CBC)

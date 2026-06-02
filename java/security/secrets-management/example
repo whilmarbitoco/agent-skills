@@ -1,0 +1,38 @@
+package com.simplepos.security;
+
+import io.github.cdimascio.dotenv.Dotenv;
+
+public class SecretsManager {
+
+    private final Dotenv dotenv;
+
+    public SecretsManager() {
+        this.dotenv = Dotenv.configure()
+            .filename(".env")
+            .ignoreIfMissing() // prod uses keyring
+            .load();
+    }
+
+    public String getDatabasePassword() {
+        // Dev: read from .env
+        String devPassword = dotenv.get("DB_PASSWORD");
+        if (devPassword != null) return devPassword;
+
+        // Prod: read from OS keyring
+        return readFromKeyring("simplepos", "db_password");
+    }
+
+    public String getApiKey(String name) {
+        String value = dotenv.get(name);
+        if (value != null) return value;
+        return readFromKeyring("simplepos", name);
+    }
+
+    private String readFromKeyring(String service, String key) {
+        // Use keytar4j or similar for OS keyring access
+        // Windows: Credential Manager
+        // macOS: Keychain
+        // Linux: Secret Service / KWallet
+        throw new UnsupportedOperationException("Keyring not configured");
+    }
+}

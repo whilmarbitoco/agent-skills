@@ -1,0 +1,41 @@
+package com.simplepos.security;
+
+import javax.crypto.*;
+import javax.crypto.spec.*;
+import java.security.*;
+import java.util.Base64;
+
+public class ConfigEncryption {
+
+    private static final String ALGORITHM = "AES/GCM/NoPadding";
+    private static final int GCM_TAG_LENGTH = 128;
+    private static final int IV_LENGTH = 12;
+    private static final int ITERATIONS = 100_000;
+
+    public static SecretKey deriveKey(char[] password, byte[] salt) throws Exception {
+        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+        KeySpec spec = new PBEKeySpec(password, salt, ITERATIONS, 256);
+        return new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES");
+    }
+
+    public static String encrypt(String plaintext, SecretKey key) throws Exception {
+        byte[] iv = new byte[IV_LENGTH];
+        SecureRandom.getInstanceStrong().nextBytes(iv);
+        Cipher cipher = Cipher.getInstance(ALGORITHM);
+        cipher.init(Cipher.ENCRYPT_MODE, key, new GCMParameterSpec(GCM_TAG_LENGTH, iv));
+        byte[] encrypted = cipher.doFinal(plaintext.getBytes());
+        byte[] combined = new byte[IV_LENGTH + encrypted.length];
+        System.arraycopy(iv, 0, combined, 0, IV_LENGTH);
+        System.arraycopy(encrypted, 0, combined, IV_LENGTH, encrypted.length);
+        return Base64.getEncoder().encodeToString(combined);
+    }
+
+    public static String decrypt(String ciphertext, SecretKey key) throws Exception {
+        byte[] combined = Base64.getDecoder().decode(ciphertext);
+        byte[] iv = Arrays.copyOfRange(combined, 0, IV_LENGTH);
+        byte[] encrypted = Arrays.copyOfRange(combined, IV_LENGTH, combined.length);
+        Cipher cipher = Cipher.getInstance(ALGORITHM);
+        cipher.init(Cipher.DECRYPT_MODE, key, new GCMParameterSpec(GCM_TAG_LENGTH, iv));
+        return new String(cipher.doFinal(encrypted));
+    }
+}

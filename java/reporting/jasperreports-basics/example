@@ -1,0 +1,40 @@
+package com.simplepos.reporting;
+
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import java.util.*;
+
+public class ReceiptReportService {
+
+    private final JasperReport compiledReport;
+
+    public ReceiptReportService() throws JRException {
+        // Load pre-compiled .jasper (compiled at build time)
+        this.compiledReport = (JasperReport) JRLoader.loadObject(
+            getClass().getResourceAsStream("/reports/receipt.jasper")
+        );
+    }
+
+    public byte[] generateReceipt(Sale sale) throws JRException {
+        Map<String, Object> params = Map.of(
+            "storeName", "Simple POS",
+            "saleId", sale.getId(),
+            "date", sale.getCreatedAt(),
+            "total", sale.getTotal()
+        );
+        JRBeanCollectionDataSource lines = new JRBeanCollectionDataSource(
+            sale.getLines().stream().map(ReceiptLine::fromEntity).toList()
+        );
+        params.put("lines", lines);
+
+        JasperPrint print = JasperFillManager.fillReport(compiledReport, params, new JREmptyDataSource());
+        return JasperExportManager.exportReportToPdf(print);
+    }
+
+    public record ReceiptLine(String name, int qty, String price, String total) {
+        public static ReceiptLine fromEntity(SaleLine line) {
+            return new ReceiptLine(line.productName(), line.quantity(),
+                line.unitPrice().toString(), line.lineTotal().toString());
+        }
+    }
+}

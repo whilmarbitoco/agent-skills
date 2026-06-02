@@ -1,88 +1,47 @@
 ---
 name: javafx-maven-plugin
-description: "Use when configuring the Gluon JavaFX Maven plugin."
-category: java
-tags:
-  - java-21
-  - maven
+description: >
+  Extends agent's knowledge of configuring the JavaFX Maven plugin
+  for building, running, and packaging JavaFX 21 desktop applications.
+  Use when creating or migrating a JavaFX project with Maven.
+compatibility: Java 21+
+metadata:
+  domain: maven
+  level: intermediate
+  stack: [java-21, javafx-21, maven-3.9]
+  version: "1.0.0"
 ---
 
-# JavaFX Maven Plugin (Gluon)
+# JavaFX Maven Plugin
 
-**Skill ID:** `javafx-maven-plugin`  
-**Domain:** `maven`  
-**Level:** intermediate  
-**Version:** 1.0.0  
-**Last Updated:** 2026-06-01
+The `org.openjfx:javafx-maven-plugin` handles classpath setup,
+native library extraction, and `jlink`-based runtime images for JavaFX.
 
-**Stack:** `java-21, maven`  
-**POS Guidance:** javafx:run in dev. Module path in pom.xml.
+## Concepts
 
----
+- **JavaFX modules** — `javafx-controls`, `javafx-fxml`, `javafx-graphics`,
+  `javafx-base`, `javafx-web`, `javafx-media`.
+- **Platform classifiers** — `-win`, `-linux`, `-mac`, `-mac-aarch64`.
+- **jlink** — creates a custom JRE with only required modules.
+- **JavaFX BOM** — import to manage all JavaFX versions atomically.
 
-## Purpose
+## Rules
 
-Use when configuring the Gluon JavaFX Maven plugin.
+1. Import `org.openjfx:javafx-bom` in `<dependencyManagement>`.
+2. Use `javafx-maven-plugin` (not `maven-jar-plugin`) for the main module.
+3. Avoid wildcard `*` dependencies — declare each JavaFX module explicitly.
+4. Use `mvn javafx:run` during development; `mvn javafx:jlink` for
+   production images.
+5. Add platform-specific dependencies with `<classifier>` when needed.
+6. If module-info exists, add `requires` for each JavaFX module used.
+7. Test on all target platforms — JavaFX bundles native libs per OS.
 
----
+## Anti-patterns
 
-## Concepts Covered
+See [anti-patterns.md](./anti-patterns.md).
 
-- **javafx:run**
-- **javafx:jlink**
-- **javafx:native**
+## Related
 
----
-
-## Rules / Best Practices
-
-1. Configure mainClass in plugin
-2. Set release=21 in compiler plugin
-
----
-
-## Checklists
-
-### Implementation
-- [ ] Follow all rules above
-- [ ] Java 21 features used where applicable
-- [ ] POS domain guidance followed
-
-### Code Review
-- [ ] No layer boundary violations
-- [ ] Constructor injection used
-
----
-
-## Project-Specific Guidance (Simple POS)
-
-javafx:run in dev. Module path in pom.xml.
-
----
-
-## Recommended Reading
-- [Java 21 Docs](https://docs.oracle.com/en/java/javase/21/)  
-- [OpenJDK JEPs](https://openjdk.org/projects/jdk/21/)
-
----
-
-## AI/Agent Guide
-
-### Strict Conventions
-- Follow all rules above
-- Java 21 features (records, sealed, virtual threads, pattern matching)
-- Constructor injection only; no static mutable state
-
-### Preferred Libraries
-- See references/canonical-stack.yaml
-
-### Example Prompts
-
-```
-Implement javafx-maven-plugin in the Simple POS following the rules above.
-Use Java 21 features where applicable.
-```
-
-### Code Templates
-
-See canonical-stack.yaml for dependencies.
+- multi-module-projects — separating core from JavaFX UI
+- profiles-environments — platform-specific build profiles
+- jpackage-basics — native installer generation

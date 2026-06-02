@@ -1,90 +1,15 @@
 ---
 name: async-ui-patterns
-description: "Use when implementing background tasks with progress reporting."
-category: java
-tags:
-  - java-21
-  - ui-javafx
+description: >
+  Extends agent's knowledge of Task progress reporting, Service retry, cancellation.. Use when working with async UI in Java 21 JavaFX apps.
+compatibility: Java 21+
+metadata:
+  domain: ui-javafx
+  level: advanced
+  stack: [java-21, javafx]
+  version: "1.0.0"
 ---
 
-# Async UI Patterns
+# Async Ui Patterns
 
-**Skill ID:** `async-ui-patterns`  
-**Domain:** `ui-javafx`  
-**Level:** advanced  
-**Version:** 1.0.0  
-**Last Updated:** 2026-06-01
-
-**Stack:** `java-21, maven`  
-**POS Guidance:** Report generation as Task with progress bar.
-
----
-
-## Purpose
-
-Use when implementing background tasks with progress reporting.
-
----
-
-## Concepts Covered
-
-- **Task**
-- **Service**
-- **ProgressBar**
-- **Cancellation**
-
----
-
-## Rules / Best Practices
-
-1. Use Task for one-shot background work
-2. Use Service for restartable work
-3. Always handle cancellation
-
----
-
-## Checklists
-
-### Implementation
-- [ ] Follow all rules above
-- [ ] Java 21 features used where applicable
-- [ ] POS domain guidance followed
-
-### Code Review
-- [ ] No layer boundary violations
-- [ ] Constructor injection used
-
----
-
-## Project-Specific Guidance (Simple POS)
-
-Report generation as Task with progress bar.
-
----
-
-## Recommended Reading
-- [Java 21 Docs](https://docs.oracle.com/en/java/javase/21/)  
-- [OpenJDK JEPs](https://openjdk.org/projects/jdk/21/)
-
----
-
-## AI/Agent Guide
-
-### Strict Conventions
-- Follow all rules above
-- Java 21 features (records, sealed, virtual threads, pattern matching)
-- Constructor injection only; no static mutable state
-
-### Preferred Libraries
-- See references/canonical-stack.yaml
-
-### Example Prompts
-
-```
-Implement async-ui-patterns in the Simple POS following the rules above.
-Use Java 21 features where applicable.
-```
-
-### Code Templates
-
-See canonical-stack.yaml for dependencies.
+Task progress reporting, Service retry, cancellation.

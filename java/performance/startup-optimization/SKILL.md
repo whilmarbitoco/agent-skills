@@ -1,89 +1,54 @@
 ---
 name: startup-optimization
-description: "Use when reducing cold-start time of desktop JavaFX apps."
-category: java
-tags:
-  - java-21
-  - performance
+description: JVM startup tuning for JavaFX desktop apps — CDS, AppCDS, AOT, lazy init, module trimming
+license: MIT
+compatibility:
+  - claude-code
+  - cursor
+  - codex
+  - opencode
+  - aider
+  - hermes
+metadata:
+  version: "1.0.0"
+  domain: performance
+  layer: infrastructure
+tags: [java, jvm, startup, performance, javafx, cds, appcds, aot]
 ---
 
-# Application Startup Optimization
+# Startup Optimization
 
-**Skill ID:** `startup-optimization`  
-**Domain:** `performance`  
-**Level:** intermediate  
-**Version:** 1.0.0  
-**Last Updated:** 2026-06-01
+JavaFX desktop app startup tuning — reduce cold start from seconds to sub-second.
 
-**Stack:** `java-21, maven`  
-**POS Guidance:** Splash while Ebean initializes. Lazy service loading.
+## Key Techniques
 
----
+1. **CDS/AppCDS** — archive class metadata for faster loading
+2. **AOT compilation** — native-image where applicable
+3. **Lazy initialization** — defer non-critical module loading
+4. **Module trimming** — `--limit-modules` to reduce boot modules
+5. **JavaFX pulse tuning** — defer first scene render
 
-## Purpose
+## Quick Reference
 
-Use when reducing cold-start time of desktop JavaFX apps.
+```bash
+# Generate CDS archive
+java -Xshare:dump -XX:SharedArchiveFile=app.jsa -cp app.jar
 
----
+# Use CDS archive
+java -XX:SharedArchiveFile=app.jsa -jar app.jar
 
-## Concepts Covered
+# AppCDS (class loading archive)
+java -Xshare:on -XX:SharedArchiveFile=app.jsa -jar app.jar
 
-- **AppCDS**
-- **Lazy loading**
-- **Splash screen**
-
----
-
-## Rules / Best Practices
-
-1. Use AppCDS
-2. Lazy-load non-critical services
-3. Splash screen during startup
-
----
-
-## Checklists
-
-### Implementation
-- [ ] Follow all rules above
-- [ ] Java 21 features used where applicable
-- [ ] POS domain guidance followed
-
-### Code Review
-- [ ] No layer boundary violations
-- [ ] Constructor injection used
-
----
-
-## Project-Specific Guidance (Simple POS)
-
-Splash while Ebean initializes. Lazy service loading.
-
----
-
-## Recommended Reading
-- [Java 21 Docs](https://docs.oracle.com/en/java/javase/21/)  
-- [OpenJDK JEPs](https://openjdk.org/projects/jdk/21/)
-
----
-
-## AI/Agent Guide
-
-### Strict Conventions
-- Follow all rules above
-- Java 21 features (records, sealed, virtual threads, pattern matching)
-- Constructor injection only; no static mutable state
-
-### Preferred Libraries
-- See references/canonical-stack.yaml
-
-### Example Prompts
-
-```
-Implement startup-optimization in the Simple POS following the rules above.
-Use Java 21 features where applicable.
+# Limit modules
+java --limit-modules java.base,java.desktop,javafx.controls,javafx.fxml -jar app.jar
 ```
 
-### Code Templates
+## When to Use
+- Apps deployed to end-user machines with varying hardware
+- Apps where cold start > 2s is unacceptable
+- Installer-packaged apps (jpackage) where startup is first impression
 
-See canonical-stack.yaml for dependencies.
+## References
+
+→ [references/quick-reference.md](references/quick-reference.md)

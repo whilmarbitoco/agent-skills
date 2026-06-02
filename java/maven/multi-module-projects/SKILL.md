@@ -1,88 +1,50 @@
 ---
 name: multi-module-projects
-description: "Use when structuring a Maven project with multiple modules."
-category: java
-tags:
-  - java-21
-  - maven
+description: >
+  Extends agent's knowledge of structuring Maven multi-module projects.
+  Use when designing a new project with shared core, desktop UI, and
+  integration layers that must build as a single reactor.
+compatibility: Java 21+
+metadata:
+  domain: maven
+  level: intermediate
+  stack: [java-21, maven-3.9]
+  version: "1.0.0"
 ---
 
 # Multi-Module Maven Projects
 
-**Skill ID:** `multi-module-projects`  
-**Domain:** `maven`  
-**Level:** intermediate  
-**Version:** 1.0.0  
-**Last Updated:** 2026-06-01
+Parent POM defines modules, dependencyManagement, and pluginManagement.
+Each child inherits version and groupId from the parent.
 
-**Stack:** `java-21, maven`  
-**POS Guidance:** Modules: core, persistence, ui, app.
+## Concepts
 
----
+- **Reactor** — Maven builds all modules in dependency order; upstream
+  modules are available to downstream ones without installing.
+- **dependencyManagement** — declares versions in parent; children
+  omit `<version>`.
+- **pluginManagement** — declares plugin configs in parent; children
+  reference by `<plugin>` without `<version>`.
+- **Relative path** — `<relativePath/>` in child prevents Maven from
+  searching filesystem first (speeds up CI).
 
-## Purpose
+## Rules
 
-Use when structuring a Maven project with multiple modules.
+1. Parent POM packaging must be `<packaging>pom</packaging>`.
+2. Declare all module versions in parent `<dependencyManagement>`.
+3. Children reference parent with explicit `<version>`.
+4. Use `<pluginManagement>` in parent for compiler, surefire, jar plugins.
+5. Each module has a single responsibility (core, ui, app, it).
+6. Inter-module deps use `${project.version}` in the reactor.
+7. Verification modules (it) should come last in `<modules>` list.
+8. Never duplicate version numbers — single source of truth in parent.
 
----
+## Anti-patterns
 
-## Concepts Covered
+See [anti-patterns.md](./anti-patterns.md).
 
-- **Parent POM**
-- **Module BOM**
-- **Dependency management**
+## Related
 
----
-
-## Rules / Best Practices
-
-1. Parent POM defines versions in dependencyManagement
-2. Each module has own pom.xml
-
----
-
-## Checklists
-
-### Implementation
-- [ ] Follow all rules above
-- [ ] Java 21 features used where applicable
-- [ ] POS domain guidance followed
-
-### Code Review
-- [ ] No layer boundary violations
-- [ ] Constructor injection used
-
----
-
-## Project-Specific Guidance (Simple POS)
-
-Modules: core, persistence, ui, app.
-
----
-
-## Recommended Reading
-- [Java 21 Docs](https://docs.oracle.com/en/java/javase/21/)  
-- [OpenJDK JEPs](https://openjdk.org/projects/jdk/21/)
-
----
-
-## AI/Agent Guide
-
-### Strict Conventions
-- Follow all rules above
-- Java 21 features (records, sealed, virtual threads, pattern matching)
-- Constructor injection only; no static mutable state
-
-### Preferred Libraries
-- See references/canonical-stack.yaml
-
-### Example Prompts
-
-```
-Implement multi-module-projects in the Simple POS following the rules above.
-Use Java 21 features where applicable.
-```
-
-### Code Templates
-
-See canonical-stack.yaml for dependencies.
+- dependency-management — version conflict resolution
+- shading-and-packaging — uber-jar creation
+- profiles-environments — dev/staging/prod configuration
