@@ -1,3 +1,0 @@
-Java SE 21 & JDK 21
-JavaScript is disabled on your browser.
-index.html
