@@ -24,7 +24,7 @@ list in `FilteredList` and `SortedList` for live search and sort.
 - Set `comparatorProperty()` on `SortedList` to drive column sort.
 - Use `TextFieldTableCell.forTableColumn()` for inline editing.
 - Use custom `TableCell` subclass for colored / icon cells (e.g., status).
-- Set `setColumnResizePolicy(CONSTRAINED_RESIZE_POLICY)` to fill width.
+- Set `setColumnResizePolicy(CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN)` to fill width.
 
 ## Anti-patterns
 - Using `PropertyValueFactory` with raw strings (refactoring breaks it silently).

@@ -34,7 +34,8 @@ specific `pom.xml` files.
 4. Never put secrets in profiles — use environment variables +
    resource filtering instead.
 5. Use `<activation><activeByDefault>true</activeByDefault></activation>`
-   for exactly one profile.
+   for exactly one profile. Note: `activeByDefault` profiles are automatically
+   deactivated when any other profile is activated via `-P` or activation condition.
 6. Prefer `<property>` activation (`-Denv=prod`) for flexibility.
 7. Resource filtering: enable `<filtering>true</filtering>` in
    `<resource>` and use `${property}` placeholders.

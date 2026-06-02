@@ -25,7 +25,7 @@ automatic auditing.
 - **`@ManyToOne` / `@OneToMany`** — relationships with lazy loading by default
 - **`@WhenCreated` / `@WhenModified`** — automatic timestamp auditing
 - **`@SoftDelete`** — sets a flag instead of deleting the row
-- **`@DbEnumType`** — stores enums as strings or integers
+- **`@DbEnumValue`** — annotates a method that returns the DB value for an enum; storage type is `VARCHAR` (default) or `INTEGER`
 - **`@Index`** — adds database indexes via DDL generation
 
 ## Rules
@@ -35,7 +35,7 @@ automatic auditing.
 3. Always define `equals()`/`hashCode()` based on the business key or `@Id`.
 4. Use `@SoftDelete` instead of physical deletes when data retention matters.
 5. Annotate `@ManyToOne` with `@JoinColumn(name = "foreign_key_col")`.
-6. Use `@DbEnumType(ENUM)` for string-stored enums — more readable than ordinals.
+6. Use `@DbEnumValue(storage = DbEnumType.VARCHAR)` for string-stored enums — more readable than ordinals.
 7. Keep `FetchType.LAZY` as default; use `EAGER` only when always needed.
 
 ## Anti-patterns

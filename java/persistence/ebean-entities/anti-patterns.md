@@ -151,13 +151,13 @@ public class Order {
 
 ```java
 // FIX: store as string for readability and stability
-import io.ebean.annotation.DbEnumType;
+import io.ebean.annotation.DbEnumValue;
 import jakarta.persistence.*;
 
 @Entity
 public class Order {
 
-    @DbEnumType(ENUM) // stores "PENDING", "SHIPPED" etc.
+    @DbEnumValue(storage = DbEnumType.VARCHAR) // stores "PENDING", "SHIPPED" etc.
     @Column(nullable = false)
     private Status status;
 

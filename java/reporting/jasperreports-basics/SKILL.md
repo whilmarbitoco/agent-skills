@@ -7,7 +7,7 @@ compatibility: Java 21+
 metadata:
   domain: reporting
   level: intermediate
-  stack: [java-21, jasperreports-6, slf4j-2]
+  stack: [java-21, jasperreports-7, slf4j-2]
   version: "1.0.0"
 ---
 

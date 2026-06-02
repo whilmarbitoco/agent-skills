@@ -9,7 +9,8 @@ userRepo.save(user);
 ```
 
 ```java
-// FIX — hash with BCrypt
+// FIX — hash with BCrypt (prefer Spring Security's BCryptPasswordEncoder
+// for new projects; jBCrypt is unmaintained since 2017)
 import org.mindrot.jbcrypt.BCrypt;
 
 String hashed = BCrypt.hashpw(password, BCrypt.gensalt(12));

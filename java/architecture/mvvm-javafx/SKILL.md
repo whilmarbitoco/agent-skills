@@ -35,7 +35,7 @@ MVVM keeps the View passive and the ViewModel stateless in behavior. Bindings ca
 ## Thread safety
 
 - All bound properties must be mutated on FX Application Thread.
-- Background work via `Task<Service>` pattern; ViewModel exposes `ObjectProperty<Task>`.
+- Background work via `Task` / `Service` pattern; ViewModel exposes `ObjectProperty<Task>`.
 
 ## See also
 

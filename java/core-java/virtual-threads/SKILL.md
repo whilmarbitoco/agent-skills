@@ -27,7 +27,7 @@ Use them for I/O-bound work: HTTP calls, DB queries, file reads.
 
 ## Rules
 
-1. Use virtual threads for I/O-bound tasks; keep `ThreadParallel` for CPU-bound.
+1. Use virtual threads for I/O-bound tasks; keep platform threads for CPU-bound.
 2. Replace `ExecutorService` fixed pools with `Executors.newVirtualThreadPerTaskExecutor()`.
 3. Never use `synchronized` on long-running or I/O sections in virtual threads — use `ReentrantLock`.
 4. Use `StructuredTaskScope` to fan-out concurrent subtasks with automatic cancellation.

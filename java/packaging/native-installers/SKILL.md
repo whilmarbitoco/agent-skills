@@ -26,8 +26,8 @@ the POS terminal on first launch.
 - **`dpkg-deb` / `debhelper`** — Linux `.deb` maintainer scripts
   (`postinst`, `prerm`).
 - **`pkgbuild` / `productbuild`** — macOS `.pkg` and `.dmg` creation.
-- **Code signing** — Authenticode (Windows), GPG/notarize (macOS),
-  GPG (Linux) to avoid OS warning dialogs.
+- **Code signing** — Authenticode (Windows), Apple `codesign` + notarization (macOS),
+   GPG (Linux) to avoid OS warning dialogs.
 
 ## Rules
 

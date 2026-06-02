@@ -18,13 +18,13 @@ Never drop/recreate — always migrate forward.
 
 ## Core Concepts
 - Numbered migration scripts: `1.sql`, `2.sql`, `3.sql`
-- `schema_version` table tracks current version
+- `db_migration` table tracks current version
 - Ebean diff: generate migration from entity changes
 - Always test on a copy of production data
 
 ## Rules
 1. Number migrations sequentially — no gaps, no duplicates
-2. Each migration is a single `.sql` file in `src/main/resources/db/migration/`
+2. Each migration is a single `.sql` file in `src/main/resources/dbmigration/`
 3. Include `apply` and `undo` comments in each migration
 4. Never `DROP`tables in production — use `ALTER TABLE ADD COLUMN` instead
 5. Test migration on a backup before running on user data

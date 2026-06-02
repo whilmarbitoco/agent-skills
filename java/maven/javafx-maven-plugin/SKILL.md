@@ -21,7 +21,7 @@ native library extraction, and `jlink`-based runtime images for JavaFX.
 
 - **JavaFX modules** — `javafx-controls`, `javafx-fxml`, `javafx-graphics`,
   `javafx-base`, `javafx-web`, `javafx-media`.
-- **Platform classifiers** — `-win`, `-linux`, `-mac`, `-mac-aarch64`.
+- **Platform classifiers** — `win`, `linux`, `mac`, `mac-aarch64`, `linux-aarch64`.
 - **jlink** — creates a custom JRE with only required modules.
 - **JavaFX BOM** — import to manage all JavaFX versions atomically.
 

@@ -49,7 +49,7 @@ includes a QR code linking to a digital receipt verification URL.
 ### Thermal Printer Output (ESC/POS)
 - Convert receipt to ESC/POS byte commands for direct printer communication
 - Support for: bold, underline, double-height, barcode, QR code, cut paper
-- USB/serial printer communication via `javax.usb` or `jSerialComm`
+- USB/serial printer communication via `jSerialComm`
 
 ### QR Code
 - ZXing library generates QR code as `BufferedImage`

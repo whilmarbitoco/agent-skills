@@ -24,7 +24,7 @@ pattern matching. Guarded patterns (`when` clauses) add arbitrary conditions.
 - `case String s when s.length() > 5 -> ...` — guarded pattern
 - `case null -> ...` — explicit null handling (Java 21)
 - `case Circle c when c.radius() > 0 -> ...` — domerguard + binding
-- Dominance: more specific patterns must come after less specific ones or compiler errors
+- Dominance: a more general pattern (e.g., `CharSequence`) dominates a more specific one (e.g., `String`); order from most specific to least specific or the compiler will reject
 
 ## Rules
 

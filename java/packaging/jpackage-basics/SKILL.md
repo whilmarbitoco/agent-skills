@@ -37,7 +37,7 @@ the end-user to install a JRE.
    produce a trimmed runtime image.
 3. Pass `--icon`, `--vendor`, `--app-version` for every target platform.
 4. Test the packaged app on a clean VM without a JDK installed.
-5. Use `--win-console false` / `--linux-shortcut` / `--mac-package-identifier`
+5. Omit `--win-console` (present = enables console, absent = no console) / use `--linux-shortcut` / `--mac-package-identifier`
    for platform-appropriate defaults.
 
 ## Anti-patterns

@@ -24,7 +24,7 @@ project in the dependency tree wins.
 - **BOM (Bill of Materials)** — a POM with `<scope>import</scope>` that
   manages a library family's versions atomically.
 - **Exclusions** — `<exclusion>` removes a specific transitive dep.
-- **Scopes** — `compile`, `provided`, `runtime`, `test`, `import`.
+- **Scopes** — `compile`, `provided`, `runtime`, `test`, `import`, `system`.
 - **Enforcer plugin** — bans duplicate or conflicting versions.
 
 ## Rules

@@ -8,7 +8,7 @@ compatibility: Java 21+
 metadata:
   domain: reporting
   level: beginner
-  stack: [java-21, zxing, java-21fx, slf4j-2]
+  stack: [java-21, zxing, javafx-21, slf4j-2]
   version: "1.0.0"
 ---
 
